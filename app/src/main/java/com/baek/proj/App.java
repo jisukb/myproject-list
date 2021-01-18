@@ -35,120 +35,133 @@ public class App {
 
     int oindex = 0;
 
-    while (true) {
-      System.out.println("사원 등록> /employee/add");
-      System.out.println("사원 목록> /employee/list");
-      System.out.println("제품 등록> /product/add");
-      System.out.println("제품 목록> /product/list");
-      System.out.println("지점 등록> /office/add");
-      System.out.println("지점 목록> /office/list");
-      System.out.println("종료> exit or quit");
-      System.out.println();
-      System.out.print("명령> ");
-      String input = keyScan.nextLine();
+    loop: 
+      while (true) {
+        System.out.println("1. 사원 등록");
+        System.out.println("2. 사원 목록");
+        System.out.println("---------------");
+        System.out.println("3. 제품 등록");
+        System.out.println("4. 제품 목록");
+        System.out.println("---------------");
+        System.out.println("5. 지점 등록");
+        System.out.println("6. 지점 목록");
+        System.out.println("---------------");
+        System.out.println("7. 종료");
+        System.out.println();
+        System.out.print("명령> ");
+        String choice = keyScan.nextLine();
 
-      if (input.equalsIgnoreCase("exit") ||
-          input.equalsIgnoreCase("quit")) {
-        break;
-      } else if (input.equalsIgnoreCase("/employee/add")) {
-        System.out.println("[사원 등록]");
-        System.out.print("번호> ");
-        no[index] = Integer.parseInt(keyScan.nextLine());
+        switch (choice) {
+          case "1":
+            System.out.println("[사원 등록]");
 
-        System.out.print("이름> ");
-        name[index] = keyScan.nextLine();
+            System.out.print("번호> ");
+            no[index] = Integer.parseInt(keyScan.nextLine());
 
-        System.out.print("직급> ");
-        position[index] = keyScan.nextLine();
+            System.out.print("이름> ");
+            name[index] = keyScan.nextLine();
 
-        System.out.print("메일> ");
-        email[index] = keyScan.nextLine();
+            System.out.print("직급> ");
+            position[index] = keyScan.nextLine();
 
-        System.out.print("전화번호> ");
-        phone[index] = keyScan.nextLine();
+            System.out.print("메일> ");
+            email[index] = keyScan.nextLine();
 
-        System.out.print("입사일> ");
-        joinDate[index] = Date.valueOf(keyScan.nextLine());
+            System.out.print("전화번호> ");
+            phone[index] = keyScan.nextLine();
 
-        index++;
-      } else if (input.equalsIgnoreCase("/employee/list")) {
-        System.out.println("[사원 목록]");
-        for (int i = 0; i < index; i++) {
-          System.out.printf("%d> %s, %s, %s, %s, %s\n", 
-              no[i], name[i], position[i], email[i], phone[i], joinDate[i]);
+            System.out.print("입사일> ");
+            joinDate[index] = Date.valueOf(keyScan.nextLine());
+
+            index++;
+            break;
+          case "2":
+            System.out.println("[사원 목록]");
+            for (int i = 0; i < index; i++) {
+              System.out.printf("%d> %s, %s, %s, %s, %s\n", 
+                  no[i], name[i], position[i], email[i], phone[i], joinDate[i]);
+            } 
+            break;
+          case "3":
+            System.out.println("[제품 등록]");
+            System.out.print("번호> ");
+            pno[pindex] = Integer.parseInt(keyScan.nextLine());
+
+            System.out.print("카테고리> ");
+            category[pindex] = keyScan.nextLine();
+
+            System.out.print("제품명> ");
+            pdname[pindex] = keyScan.nextLine();
+
+            System.out.print("가격> ");
+            price[pindex] = Integer.parseInt(keyScan.nextLine());
+
+            System.out.println("재고상태");
+            System.out.println("0: 예약");
+            System.out.println("1: 판매중");
+            System.out.println("2: 품절");
+            System.out.print("> ");
+            stock[pindex] = Integer.parseInt(keyScan.nextLine());
+
+            pindex++;
+            break;
+          case "4":
+            System.out.println("[제품 목록]");
+            for (int i = 0; i < pindex; i++) {
+              String state = null;
+              switch (stock[i]) {
+                case 1:
+                  state = "판매중";
+                  break;
+                case 2:
+                  state = "품절";
+                  break;
+                default:
+                  state = "예약";
+              }
+              System.out.printf("%d. %s> %s %d원, %s\n",
+                  pno[i], category[i], pdname[i], price[i], state);
+            } 
+            break;
+          case "5":
+            System.out.println("[지점 등록]");
+            System.out.print("번호> ");
+            fno[oindex] = Integer.parseInt(keyScan.nextLine());
+
+            System.out.print("지점명> ");
+            fname[oindex] = keyScan.nextLine();
+
+            System.out.print("위치> ");
+            location[oindex] = keyScan.nextLine();
+
+            System.out.print("전화번호> ");
+            number[oindex] = keyScan.nextLine();
+
+            System.out.print("담당자> ");
+            manager[oindex] = keyScan.nextLine();
+
+            System.out.print("오픈일> ");
+            openDate[oindex] = Date.valueOf(keyScan.nextLine());
+
+            oindex++;
+            break;
+          case "6": 
+            System.out.println("[지점 목록]");
+            for (int i = 0; i < oindex; i++) {
+              System.out.printf("%d> %s (%s)\n", fno[i], fname[i], number[i]);
+              System.out.printf("%s, %s 오픈\n", location[i], openDate[i]);
+            } 
+            break;
+          case "7":
+            System.out.println("END");
+            break loop;
+          default:
+            System.out.println("실행할 수 없는 명령입니다.");
         }
-      } else if (input.equalsIgnoreCase("/product/add")) {
-        System.out.println("[제품 등록]");
-        System.out.print("번호> ");
-        pno[pindex] = Integer.parseInt(keyScan.nextLine());
 
-        System.out.print("카테고리> ");
-        category[pindex] = keyScan.nextLine();
-
-        System.out.print("제품명> ");
-        pdname[pindex] = keyScan.nextLine();
-
-        System.out.print("가격> ");
-        price[pindex] = Integer.parseInt(keyScan.nextLine());
-
-        System.out.println("재고상태");
-        System.out.println("0: 예약");
-        System.out.println("1: 판매중");
-        System.out.println("2: 품절");
-        System.out.print("> ");
-        stock[pindex] = Integer.parseInt(keyScan.nextLine());
-
-        pindex++;
-      } else if (input.equalsIgnoreCase("/product/list")) {
-        System.out.println("[제품 목록]");
-        for (int i = 0; i < pindex; i++) {
-          String state = null;
-          switch (stock[pindex]) {
-            case 1:
-              state = "판매중";
-              break;
-            case 2:
-              state = "품절";
-            default:
-              state = "예약";
-          }
-          System.out.printf("%d: %s> %s %d원, %s\n",
-              pno[i], category[i], pdname[i], price[i], state);
-        }
-      } else if (input.equalsIgnoreCase("/office/add")) {
-        System.out.println("[지점 등록]");
-        System.out.print("번호> ");
-        fno[oindex] = Integer.parseInt(keyScan.nextLine());
-
-        System.out.print("지점명> ");
-        fname[oindex] = keyScan.nextLine();
-
-        System.out.print("위치> ");
-        location[oindex] = keyScan.nextLine();
-
-        System.out.print("전화번호> ");
-        number[oindex] = keyScan.nextLine();
-
-        System.out.print("담당자> ");
-        manager[oindex] = keyScan.nextLine();
-
-        System.out.print("오픈일> ");
-        openDate[oindex] = Date.valueOf(keyScan.nextLine());
-
-        oindex++;
-      } else if (input.equalsIgnoreCase("/office/list")) {
-        System.out.println("[지점 목록]");
-        for (int i = 0; i < oindex; i++) {
-          System.out.printf("%d> %s (%s)\n", fno[i], fname[i], number[i]);
-          System.out.printf("%s, %s 오픈\n", location[i], openDate[i]);
-        }
-      } else {
-        System.out.println("실행할 수 없는 명령입니다.");
+        System.out.println();
       }
-      System.out.println();
-    }
 
     keyScan.close();
-    System.out.println("END");
   }
 }

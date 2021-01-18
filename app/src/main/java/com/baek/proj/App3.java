@@ -59,6 +59,7 @@ public class App3 {
           break;
         case 2:
           state = "품절";
+          break;
         default:
           state = "예약";
       }
