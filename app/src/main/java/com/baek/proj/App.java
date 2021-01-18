@@ -36,6 +36,14 @@ public class App {
     int oindex = 0;
 
     while (true) {
+      System.out.println("사원 등록> /employee/add");
+      System.out.println("사원 목록> /employee/list");
+      System.out.println("제품 등록> /product/add");
+      System.out.println("제품 목록> /product/list");
+      System.out.println("지점 등록> /office/add");
+      System.out.println("지점 목록> /office/list");
+      System.out.println("종료> exit or quit");
+      System.out.println();
       System.out.print("명령> ");
       String input = keyScan.nextLine();
 
