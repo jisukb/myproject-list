@@ -18,22 +18,26 @@ public class App {
 
     int index = 0;
 
-    int[] pno = new int[LENGTH];
-    String[] category = new String[LENGTH];
-    String[] pdname = new String[LENGTH];
-    int[] price = new int[LENGTH];
-    int[] stock = new int[LENGTH];
+    final int PLENGTH = 100;
+
+    int[] pno = new int[PLENGTH];
+    String[] category = new String[PLENGTH];
+    String[] pdname = new String[PLENGTH];
+    int[] price = new int[PLENGTH];
+    int[] stock = new int[PLENGTH];
 
     int pindex = 0;
 
-    int[] fno = new int[LENGTH];
-    String[] fname = new String[LENGTH];
-    String[] location = new String[LENGTH];
-    String[] number = new String[LENGTH];
-    String[] manager = new String[LENGTH];
-    Date[] openDate = new Date[LENGTH];
+    final int FLENGTH = 100;
 
-    int oindex = 0;
+    int[] fno = new int[FLENGTH];
+    String[] fname = new String[FLENGTH];
+    String[] location = new String[FLENGTH];
+    String[] number = new String[FLENGTH];
+    String[] manager = new String[FLENGTH];
+    Date[] openDate = new Date[FLENGTH];
+
+    int findex = 0;
 
     loop: 
       while (true) {
@@ -126,28 +130,28 @@ public class App {
           case "5":
             System.out.println("[지점 등록]");
             System.out.print("번호> ");
-            fno[oindex] = Integer.parseInt(keyScan.nextLine());
+            fno[findex] = Integer.parseInt(keyScan.nextLine());
 
             System.out.print("지점명> ");
-            fname[oindex] = keyScan.nextLine();
+            fname[findex] = keyScan.nextLine();
 
             System.out.print("위치> ");
-            location[oindex] = keyScan.nextLine();
+            location[findex] = keyScan.nextLine();
 
             System.out.print("전화번호> ");
-            number[oindex] = keyScan.nextLine();
+            number[findex] = keyScan.nextLine();
 
             System.out.print("담당자> ");
-            manager[oindex] = keyScan.nextLine();
+            manager[findex] = keyScan.nextLine();
 
             System.out.print("오픈일> ");
-            openDate[oindex] = Date.valueOf(keyScan.nextLine());
+            openDate[findex] = Date.valueOf(keyScan.nextLine());
 
-            oindex++;
+            findex++;
             break;
           case "6": 
             System.out.println("[지점 목록]");
-            for (int i = 0; i < oindex; i++) {
+            for (int i = 0; i < findex; i++) {
               System.out.printf("%d> %s (%s)\n", fno[i], fname[i], number[i]);
               System.out.printf("%s, %s 오픈\n", location[i], openDate[i]);
             } 
