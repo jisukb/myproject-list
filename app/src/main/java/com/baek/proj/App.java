@@ -39,19 +39,20 @@ public class App {
 
     int findex = 0;
 
+    System.out.println("1. 사원 등록");
+    System.out.println("2. 사원 목록");
+    System.out.println("---------------");
+    System.out.println("3. 제품 등록");
+    System.out.println("4. 제품 목록");
+    System.out.println("---------------");
+    System.out.println("5. 지점 등록");
+    System.out.println("6. 지점 목록");
+    System.out.println("---------------");
+    System.out.println("7. 종료");
+    System.out.println();
+
     loop: 
       while (true) {
-        System.out.println("1. 사원 등록");
-        System.out.println("2. 사원 목록");
-        System.out.println("---------------");
-        System.out.println("3. 제품 등록");
-        System.out.println("4. 제품 목록");
-        System.out.println("---------------");
-        System.out.println("5. 지점 등록");
-        System.out.println("6. 지점 목록");
-        System.out.println("---------------");
-        System.out.println("7. 종료");
-        System.out.println();
         System.out.print("명령> ");
         String choice = keyScan.nextLine();
 
