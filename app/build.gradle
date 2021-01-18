@@ -13,6 +13,19 @@ plugins {
     id 'eclipse'
 }
 
+eclipse {
+    project {
+        // eclipse .project 파일에 등록할 프로젝트 이름
+        name = "myproject-list"
+    }
+}
+
+// 자바 소스를 컴파일 할 때 적용할 옵션
+tasks.withType(JavaCompile) {
+    // $javac -encoding UTF-8 ...
+    options.encoding = 'UTF-8'
+}
+
 repositories {
     // Use JCenter for resolving dependencies.
     jcenter()
