@@ -1,22 +1,15 @@
 package com.baek.proj.handler;
 
+import com.baek.proj.domain.Product;
 import com.baek.util.Prompt;
 
 public class ProductHandler {
 
-  static class Product {
-    int no;
-    String category;
-    String name;
-    int price;
-    int stock;
-  }
-
   static final int LENGTH = 100;
-  static Product[] products = new Product[LENGTH];
-  static int index = 0;
+  Product[] products = new Product[LENGTH];
+  int index = 0;
 
-  public static void add() {
+  public void add() {
     System.out.println("[제품 등록]");
 
     Product p = new Product();
@@ -25,13 +18,13 @@ public class ProductHandler {
     p.name = Prompt.inputString("제품명> ");
     p.price = Prompt.inputInt("가격> ");
     p.stock = Prompt.inputInt("재고상태\n0: 예약\n1: 판매중\n2: 품절\n> ");
-    products[index++] = p;
+    this.products[this.index++] = p;
   }
 
-  public static void list() {
+  public void list() {
     System.out.println("[제품 목록]");
-    for (int i = 0; i < index; i++) {
-      Product p = products[i];
+    for (int i = 0; i < this.index; i++) {
+      Product p = this.products[i];
       String state = null;
       switch (p.stock) {
         case 1:

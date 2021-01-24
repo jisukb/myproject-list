@@ -7,47 +7,44 @@ import com.baek.util.Prompt;
 
 public class App {
   public static void main(String[] args) {
-
-    System.out.println("1. 사원 등록");
-    System.out.println("2. 사원 목록");
-    System.out.println("---------------");
-    System.out.println("3. 제품 등록");
-    System.out.println("4. 제품 목록");
-    System.out.println("---------------");
-    System.out.println("5. 지점 등록");
-    System.out.println("6. 지점 정보");
-    System.out.println("---------------");
-    System.out.println("7. 종료");
+    System.out.println("1. 사원 등록\t2. 사원 목록\t3. 제품등록\t4. 제품 목록\t"
+        + "5. 지점 등록\t6. 지점 정보\t7. 종료(quit/exit)");
     System.out.println();
+
+    EmployeeHandler employeeList = new EmployeeHandler();
+    ProductHandler productList = new ProductHandler();
+    StoreHandler storeList = new StoreHandler();
 
     loop: 
       while (true) {
-        String choice = Prompt.inputString("명령> ");
+        String choice = Prompt.inputString("원하는 메뉴를 선택하세요.> ");
 
         switch (choice) {
           case "1":
-            EmployeeHandler.add();
+            employeeList.add();
             break;
           case "2":
-            EmployeeHandler.list();
+            employeeList.list();
             break;
           case "3":
-            ProductHandler.add();
+            productList.add();
             break;
           case "4":
-            ProductHandler.list();
+            productList.list();
             break;
           case "5":
-            StoreHandler.add();
+            storeList.add(employeeList);
             break;
           case "6": 
-            StoreHandler.list();
+            storeList.list();
             break;
           case "7":
-            System.out.println("-END-");
+          case "quit":
+          case "exit":
+            System.out.println("프로그램을 종료합니다.");
             break loop;
           default:
-            System.out.println("실행할 수 없는 명령입니다.");
+            System.out.println("잘못 선택하셨습니다.");
         }
 
         System.out.println();
