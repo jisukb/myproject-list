@@ -6,10 +6,17 @@ import com.baek.util.Prompt;
 public class StoreHandler {
 
   static final int LENGTH = 100;
+
+  EmployeeHandler employeeList;
+
   Store[] stores = new Store[LENGTH];
   int index = 0;
 
-  public void add(EmployeeHandler employeeList) {
+  public StoreHandler(EmployeeHandler employeeHandler) {
+    this.employeeList = employeeHandler;
+  }
+
+  public void add() {
     System.out.println("[지점 등록]");
 
     Store s = new Store();

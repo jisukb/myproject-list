@@ -13,7 +13,7 @@ public class App {
 
     EmployeeHandler employeeList = new EmployeeHandler();
     ProductHandler productList = new ProductHandler();
-    StoreHandler storeList = new StoreHandler();
+    StoreHandler storeList = new StoreHandler(employeeList);
 
     loop: 
       while (true) {
@@ -33,7 +33,7 @@ public class App {
             productList.list();
             break;
           case "5":
-            storeList.add(employeeList);
+            storeList.add();
             break;
           case "6": 
             storeList.list();

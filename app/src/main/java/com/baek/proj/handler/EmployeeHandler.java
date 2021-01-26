@@ -25,9 +25,8 @@ public class EmployeeHandler {
     System.out.println("[사원 목록]");
     for (int i = 0; i < this.index; i++) {
       Employee e = this.employees[i];
-      System.out.printf("%d> %s (%s부)\n%s, %s\n입사일 %s\n", 
+      System.out.printf("%d> %s (%s부) %s, %s, %s 입사\n", 
           i+1, e.name, e.position, e.email, e.phone, e.joinDate);
-      System.out.println("----------------------------------");
     }
   }
 
