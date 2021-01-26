@@ -44,9 +44,19 @@ public class StoreHandler {
     System.out.println("[지점 정보]");
     for (int i = 0; i < this.index; i++) {
       Store s = this.stores[i];
-      System.out.printf("%d> %s (%s)\n", s.no, s.name, s.tel);
+      System.out.printf("%d> %s (%s)\n", s.no, s.name, format(s.tel));
       System.out.printf("%s, %s\n", s.address, s.time);
       System.out.println("----------------------------------");
     } 
+  }
+
+  public String format(String tel) {
+    if(tel.length() == 10) {  
+      return tel.replaceFirst("(^02|[0-9]{3})([0-9]{3,4})([0-9]{4})$", "$1-$2-$3");
+    } else if ( tel.length() == 11) { 
+      return tel.replaceFirst("(^[0-9]{3})([0-9]{4})([0-9]{4})$", "$1-$2-$3");
+    } else {
+      return tel.replaceFirst("(^02)([0-9]{3,4})([0-9]{4})$", "$1-$2-$3"); 
+    }
   }
 }

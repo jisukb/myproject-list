@@ -26,7 +26,7 @@ public class EmployeeHandler {
     for (int i = 0; i < this.index; i++) {
       Employee e = this.employees[i];
       System.out.printf("%d> %s (%s부) %s, %s, %s 입사\n", 
-          i+1, e.name, e.position, e.email, e.phone, e.joinDate);
+          i+1, e.name, e.position, e.email, phoneFormat(e.phone), e.joinDate);
     }
   }
 
@@ -37,5 +37,12 @@ public class EmployeeHandler {
       }
     }
     return false;
+  }
+
+  public String phoneFormat(String phone) {
+    if(phone.length() == 11) {  
+      return phone.replaceFirst("(^010)([0-9]{4})([0-9]{4})$", "$1-$2-$3");
+    }
+    return phone; 
   }
 }
