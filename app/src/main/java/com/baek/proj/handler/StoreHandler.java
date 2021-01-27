@@ -44,9 +44,9 @@ public class StoreHandler {
     System.out.println("[지점 정보]");
     for (int i = 0; i < this.index; i++) {
       Store s = this.stores[i];
-      System.out.printf("%d> %s (%s)\n", s.no, s.name, format(s.tel));
+      System.out.printf("%d> %s점 TEL.%s\n", s.no, s.name, format(s.tel));
       System.out.printf("%s, %s\n", s.address, s.time);
-      System.out.println("----------------------------------");
+      System.out.println("--------------------------------------");
     } 
   }
 
