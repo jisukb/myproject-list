@@ -5,7 +5,7 @@ import java.sql.Date;
 public class Employee {
   public int no;
   public String name;
-  public String position;
+  public String dept;
   public String email;
   public String phone;
   public Date joinDate;

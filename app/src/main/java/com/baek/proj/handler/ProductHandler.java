@@ -59,6 +59,7 @@ public class ProductHandler {
     p.name = Prompt.inputString("상품명> ");
     p.price = Prompt.inputInt("가격> ");
     p.stock = Prompt.inputInt("재고상태\n0: 예약\n1: 판매중\n2: 품절\n> ");
+    p.info = Prompt.inputString("설명> ");
     this.products[this.index++] = p;
   }
 
@@ -84,6 +85,7 @@ public class ProductHandler {
     System.out.printf("상품명: %s\n", product.name);
     System.out.printf("가격: %s\n", product.price);
     System.out.printf("재고상태: %s\n", getState(product.stock));
+    System.out.printf("설명: %s\n", product.info);
   }
 
   public void update() {
@@ -101,6 +103,7 @@ public class ProductHandler {
     int price = Prompt.inputInt(String.format("가격(%s)> ", product.price));
     int stock = Prompt.inputInt(String.format(
         "재고상태\n0: 예약상품\n1: 판매중\n2: 품절\n> ", getState(product.stock)));
+    String info = Prompt.inputString(String.format("설명(%s)> ", product.info));
 
     String input = Prompt.inputString("변경하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
@@ -108,6 +111,7 @@ public class ProductHandler {
       product.name = name;
       product.price = price;
       product.stock = stock;
+      product.info = info;
       System.out.println("상품 정보를 변경하였습니다.");
     } else {
       System.out.println("수정을 취소하였습니다.");
@@ -173,6 +177,15 @@ public class ProductHandler {
       default:
         return "예약상품입니다.";
     }
+  }
+
+  public boolean exist(String name) {
+    for (int i = 0; i < this.index; i++) {
+      if (name.equals(this.products[i].name)) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

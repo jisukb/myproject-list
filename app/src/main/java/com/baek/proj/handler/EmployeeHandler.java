@@ -56,7 +56,7 @@ public class EmployeeHandler {
     Employee e = new Employee();
     e.no = Prompt.inputInt("번호> ");
     e.name = Prompt.inputString("이름> ");
-    e.position = Prompt.inputString("부서> ");
+    e.dept = Prompt.inputString("부서> ");
     e.email = Prompt.inputString("메일> ");
     e.phone = Prompt.inputString("전화번호> ");
     e.joinDate = Prompt.inputDate("입사일> ");
@@ -71,7 +71,7 @@ public class EmployeeHandler {
       if (e == null)
         continue;
       System.out.printf("%d> %s (%s부) %s, %s, %s 입사\n", 
-          e.no, e.name, e.position, e.email, phoneFormat(e.phone), e.joinDate);
+          e.no, e.name, e.dept, e.email, phoneFormat(e.phone), e.joinDate);
     }
   }
 
@@ -101,7 +101,7 @@ public class EmployeeHandler {
       return;
     }
     System.out.printf("이름: %s\n", employee.name);
-    System.out.printf("부서: %s\n", employee.position);
+    System.out.printf("부서: %s\n", employee.dept);
     System.out.printf("메일: %s\n", employee.email);
     System.out.printf("전화번호: %s\n", 
         employee.phone.replaceFirst("(\\d{3})(\\d{4})(\\d+)", "$1-$2-$3"));
@@ -118,14 +118,14 @@ public class EmployeeHandler {
       return;
     }
     String name = Prompt.inputString(String.format("이름(%s)> ", employee.name));
-    String position = Prompt.inputString(String.format("부서(%s)> ", employee.position));
+    String dept = Prompt.inputString(String.format("부서(%s)> ", employee.dept));
     String email = Prompt.inputString(String.format("메일(%s)> ", employee.email));
     String phone = Prompt.inputString(String.format("전화번호(%s)> ", employee.phone));
 
     String input = Prompt.inputString("변경하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
       employee.name = name;
-      employee.position = position;
+      employee.dept = dept;
       employee.email = email;
       employee.phone = phone;
       System.out.println("사원 정보를 변경하였습니다.");

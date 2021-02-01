@@ -2,6 +2,7 @@ package com.baek.proj;
 
 import com.baek.proj.handler.EmployeeHandler;
 import com.baek.proj.handler.ProductHandler;
+import com.baek.proj.handler.ReviewHandler;
 import com.baek.proj.handler.StoreHandler;
 import com.baek.util.Prompt;
 
@@ -11,14 +12,16 @@ public class App {
     EmployeeHandler employeeHandler = new EmployeeHandler();
     ProductHandler productHandler = new ProductHandler();
     StoreHandler storeHandler = new StoreHandler(employeeHandler);
+    ReviewHandler reviewHandler = new ReviewHandler(productHandler);
 
     loop: 
       while (true) {
 
         System.out.println("-----메인-----");
         System.out.println("1. 사원");
-        System.out.println("2. 상품");
-        System.out.println("3. 지점");
+        System.out.println("2. 지점");
+        System.out.println("3. 상품");
+        System.out.println("4. 리뷰");
         System.out.println("0. 종료");
         System.out.println("--------------");
 
@@ -29,10 +32,13 @@ public class App {
             employeeHandler.service();
             break;
           case "2":
-            productHandler.service();
+            storeHandler.service();
             break;
           case "3":
-            storeHandler.service();
+            productHandler.service();
+            break;
+          case "4":
+            reviewHandler.service();
             break;
           case "0":
             System.out.println("프로그램을 종료합니다.");
