@@ -5,9 +5,7 @@ import com.baek.util.Prompt;
 
 public class EmployeeHandler {
 
-  static final int LENGTH = 100;
-  Employee[] employees = new Employee[LENGTH];
-  int index = 0;
+  public EmployeeList employeeList = new EmployeeList();
 
   public void service() {
     loop: 
@@ -54,48 +52,32 @@ public class EmployeeHandler {
     System.out.println("[사원 등록]");
 
     Employee e = new Employee();
+
     e.no = Prompt.inputInt("번호> ");
     e.name = Prompt.inputString("이름> ");
     e.dept = Prompt.inputString("부서> ");
     e.email = Prompt.inputString("메일> ");
     e.phone = Prompt.inputString("전화번호> ");
     e.joinDate = Prompt.inputDate("입사일> ");
-    this.employees[this.index++] = e;
+
+    employeeList.add(e);
+    System.out.println("사원을 등록하였습니다.");
   }
 
   public void list() {
     System.out.println("[사원 목록]");
-
-    for (int i = 0; i < this.index; i++) {
-      Employee e = this.employees[i];
-      if (e == null)
-        continue;
+    Employee[] employees = employeeList.toArray();
+    for (Employee e : employees) {
       System.out.printf("%d> %s (%s부) %s, %s, %s 입사\n", 
           e.no, e.name, e.dept, e.email, phoneFormat(e.phone), e.joinDate);
     }
-  }
-
-  public boolean exist(String name) {
-    for (int i = 0; i < this.index; i++) {
-      if (name.equals(this.employees[i].name)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public String phoneFormat(String phone) {
-    if(phone.length() == 11) {  
-      return phone.replaceFirst("(^010)([0-9]{4})([0-9]{4})$", "$1-$2-$3");
-    }
-    return phone; 
   }
 
   public void detail() {
     System.out.println("[사원 상세]");
 
     int no = Prompt.inputInt("번호> ");
-    Employee employee = findByNo(no);
+    Employee employee = employeeList.get(no);
     if (employee == null) {
       System.out.println("해당 번호의 사원이 없습니다.");
       return;
@@ -112,7 +94,7 @@ public class EmployeeHandler {
     System.out.println("[사원 수정]");
 
     int no = Prompt.inputInt("번호> ");
-    Employee employee = findByNo(no);
+    Employee employee = employeeList.get(no);
     if (employee == null) {
       System.out.println("해당 번호의 사원이 없습니다.");
       return;
@@ -138,38 +120,24 @@ public class EmployeeHandler {
     System.out.println("[사원 삭제]");
 
     int no = Prompt.inputInt("번호> ");
-    int i = indexOf(no);
-    if (i == -1) {
+    Employee employee = employeeList.get(no);
+    if (employee == null) {
       System.out.println("해당 번호의 사원이 없습니다.");
       return;
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      for (int x = i+1; x < this.index; x++) {
-        this.employees[x-1] = this.employees[x]; 
-      }
-      employees[--this.index] = null;
+      employeeList.delete(no);
       System.out.println("사원 정보를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
     }
   }
 
-  int indexOf(int employeeNo) {
-    for (int i = 0; i < this.index; i++) {
-      Employee employee = this.employees[i];
-      if (employee != null && employee.no == employeeNo) {
-        return i;
-      }
+  public String phoneFormat(String phone) {
+    if(phone.length() == 11) {  
+      return phone.replaceFirst("(^010)([0-9]{4})([0-9]{4})$", "$1-$2-$3");
     }
-    return -1;
-  }
-
-  Employee findByNo(int employeeNo) {
-    int i = indexOf(employeeNo);
-    if (i == -1)
-      return null;
-    else
-      return employees[i];
+    return phone; 
   }
 }

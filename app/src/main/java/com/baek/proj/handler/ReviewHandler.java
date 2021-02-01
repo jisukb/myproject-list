@@ -6,15 +6,12 @@ import com.baek.util.Prompt;
 
 public class ReviewHandler {
 
-  static final int LENGTH = 100;
+  ReviewList reviewList = new ReviewList();
 
-  ProductHandler productList;
+  ProductList productList;
 
-  Review[] reviews = new Review[LENGTH];
-  int index = 0;
-
-  public ReviewHandler(ProductHandler productHandler) {
-    this.productList = productHandler;
+  public ReviewHandler(ProductList productList) {
+    this.productList = productList;
   }
 
   public void service() {
@@ -74,17 +71,15 @@ public class ReviewHandler {
     }
     r.registereDate = new Date(System.currentTimeMillis());
 
-    this.reviews[this.index++] = r;
-
+    reviewList.add(r);
     System.out.println("리뷰를 등록하였습니다.");
 
   }
 
   public void list() {
     System.out.println("[리뷰 목록]");
-
-    for (int i = 0; i < this.index; i++) {
-      Review r = this.reviews[i];
+    Review[] reviews = reviewList.toArray();
+    for (Review r : reviews) {
       System.out.printf("%d. %s, %s, %s, %d\n",
           r.no, r.title, r.registereDate, r.writer, r.viewCount);
     }
@@ -94,12 +89,11 @@ public class ReviewHandler {
     System.out.println("[리뷰 상세]");
 
     int no = Prompt.inputInt("번호> ");
-    Review review = findByNo(no);
+    Review review = reviewList.get(no);
     if (review == null) {
       System.out.println("해당 번호의 글이 없습니다.");
       return;
     }
-
     review.viewCount++;
     System.out.printf("제목: %s\n", review.title);
     System.out.printf("작성자: %s\n", review.writer);
@@ -113,7 +107,7 @@ public class ReviewHandler {
     System.out.println("[리뷰 수정]");
 
     int no = Prompt.inputInt("번호> ");
-    Review review = findByNo(no);
+    Review review = reviewList.get(no);
     if (review == null) {
       System.out.println("해당 번호의 글이 없습니다.");
       return;
@@ -135,39 +129,18 @@ public class ReviewHandler {
     System.out.println("[리뷰 삭제]");
 
     int no = Prompt.inputInt("번호> ");
-    int i = indexOf(no);
-    if (i == -1) {
+    Review review = reviewList.get(no);
+    if (review == null) {
       System.out.println("해당 번호의 글이 없습니다.");
       return;
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      for (int x = i+1; x < this.index; x++) {
-        this.reviews[x-1] = this.reviews[x]; 
-      }
-      reviews[--this.index] = null;
+      reviewList.delete(no);
       System.out.println("리뷰를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
     }
-  }
-
-  int indexOf(int reviewNo) {
-    for (int i = 0; i < this.index; i++) {
-      Review review = this.reviews[i];
-      if (review != null && review.no == reviewNo) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  Review findByNo(int reviewNo) {
-    int i = indexOf(reviewNo);
-    if (i == -1)
-      return null;
-    else
-      return reviews[i];
   }
 
   String inputProduct(String promptTitle) {

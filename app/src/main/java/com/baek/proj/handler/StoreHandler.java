@@ -5,15 +5,12 @@ import com.baek.util.Prompt;
 
 public class StoreHandler {
 
-  static final int LENGTH = 100;
+  StoreList storeList = new StoreList();
 
-  EmployeeHandler employeeList;
+  EmployeeList employeeList;
 
-  Store[] stores = new Store[LENGTH];
-  int index = 0;
-
-  public StoreHandler(EmployeeHandler employeeHandler) {
-    this.employeeList = employeeHandler;
+  public StoreHandler(EmployeeList employeeList) {
+    this.employeeList = employeeList;
   }
 
   public void service() {
@@ -71,13 +68,14 @@ public class StoreHandler {
       System.out.println("지점 등록을 취소하였습니다.");
       return;
     }
-    this.stores[this.index++] = s;
+    storeList.add(s);
+    System.out.println("지점을 등록하였습니다.");
   }
 
   public void list() {
     System.out.println("[지점 목록]");
-    for (int i = 0; i < this.index; i++) {
-      Store s = this.stores[i];
+    Store[] stores = storeList.toArray();
+    for (Store s : stores) {
       System.out.printf("%d> %s점 %s TEL.%s\n", 
           s.no, s.name, s.address,telFormat(s.tel));
     } 
@@ -87,7 +85,7 @@ public class StoreHandler {
     System.out.println("[지점 상세]");
 
     int no = Prompt.inputInt("번호> ");
-    Store store = findByNo(no);
+    Store store = storeList.get(no);
     if (store == null) {
       System.out.println("해당 번호의 지점이 없습니다.");
       return;
@@ -104,7 +102,7 @@ public class StoreHandler {
     System.out.println("[지점 수정]");
 
     int no = Prompt.inputInt("번호> ");
-    Store store = findByNo(no);
+    Store store = storeList.get(no);
     if (store == null) {
       System.out.println("해당 번호의 지점이 없습니다.");
       return;
@@ -136,39 +134,18 @@ public class StoreHandler {
     System.out.println("[지점 삭제]");
 
     int no = Prompt.inputInt("번호> ");
-    int i = indexOf(no);
-    if (i == -1) {
+    Store store = storeList.get(no);
+    if (store == null) {
       System.out.println("해당 번호의 지점이 없습니다.");
       return;
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      for (int x = i+1; x < this.index; x++) {
-        this.stores[x-1] = this.stores[x]; 
-      }
-      stores[--this.index] = null;
+      storeList.delete(no);
       System.out.println("지점 정보를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
     }
-  }
-
-  int indexOf(int storeNo) {
-    for (int i = 0; i < this.index; i++) {
-      Store store = this.stores[i];
-      if (store != null && store.no == storeNo) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  Store findByNo(int storeNo) {
-    int i = indexOf(storeNo);
-    if (i == -1)
-      return null;
-    else
-      return stores[i];
   }
 
   public String telFormat(String tel) {

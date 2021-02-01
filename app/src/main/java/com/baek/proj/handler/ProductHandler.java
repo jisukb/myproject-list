@@ -5,9 +5,7 @@ import com.baek.util.Prompt;
 
 public class ProductHandler {
 
-  static final int LENGTH = 100;
-  Product[] products = new Product[LENGTH];
-  int index = 0;
+  public ProductList productList = new ProductList();
 
   public void service() {
     loop: 
@@ -60,13 +58,15 @@ public class ProductHandler {
     p.price = Prompt.inputInt("가격> ");
     p.stock = Prompt.inputInt("재고상태\n0: 예약\n1: 판매중\n2: 품절\n> ");
     p.info = Prompt.inputString("설명> ");
-    this.products[this.index++] = p;
+
+    productList.add(p);
+    System.out.println("상품을 등록하였습니다.");
   }
 
   public void list() {
     System.out.println("[상품 목록]");
-    for (int i = 0; i < this.index; i++) {
-      Product p = this.products[i];
+    Product[] products = productList.toArray();
+    for (Product p : products) {
       System.out.printf("%d. %s> %s %d원, %s\n",
           p.no, getChoiceCate(p.category), p.name, p.price, getState(p.stock));
     }
@@ -76,7 +76,7 @@ public class ProductHandler {
     System.out.println("[상품 상세]");
 
     int no = Prompt.inputInt("번호> ");
-    Product product = findByNo(no);
+    Product product = productList.get(no);
     if (product == null) {
       System.out.println("해당 번호의 상품이 없습니다.");
       return;
@@ -92,7 +92,7 @@ public class ProductHandler {
     System.out.println("[상품 수정]");
 
     int no = Prompt.inputInt("번호> ");
-    Product product = findByNo(no);
+    Product product = productList.get(no);
     if (product == null) {
       System.out.println("해당 번호의 상품이 없습니다.");
       return;
@@ -122,39 +122,18 @@ public class ProductHandler {
     System.out.println("[상품 삭제]");
 
     int no = Prompt.inputInt("번호> ");
-    int i = indexOf(no);
-    if (i == -1) {
+    Product product = productList.get(no);
+    if (product == null) {
       System.out.println("해당 번호의 상품이 없습니다.");
       return;
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      for (int x = i+1; x < this.index; x++) {
-        this.products[x-1] = this.products[x]; 
-      }
-      products[--this.index] = null;
+      productList.delete(no);
       System.out.println("상품 정보를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
     }
-  }
-
-  int indexOf(int productNo) {
-    for (int i = 0; i < this.index; i++) {
-      Product product = this.products[i];
-      if (product != null && product.no == productNo) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  Product findByNo(int productNo) {
-    int i = indexOf(productNo);
-    if (i == -1)
-      return null;
-    else
-      return products[i];
   }
 
   String getChoiceCate(int category) {
@@ -178,14 +157,4 @@ public class ProductHandler {
         return "예약상품입니다.";
     }
   }
-
-  public boolean exist(String name) {
-    for (int i = 0; i < this.index; i++) {
-      if (name.equals(this.products[i].name)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
 }
