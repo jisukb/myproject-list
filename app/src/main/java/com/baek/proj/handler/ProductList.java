@@ -29,7 +29,7 @@ public class ProductList {
     int i = 0;
 
     while (cursor != null) {
-      arr[i++] = cursor.pruduct;
+      arr[i++] = cursor.product;
       cursor = cursor.next;
     }
     return arr;
@@ -38,7 +38,7 @@ public class ProductList {
   Product get(int productNo) {
     Node cursor = first;
     while (cursor != null) {
-      Product p = cursor.pruduct;
+      Product p = cursor.product;
       if (p.no == productNo) {
         return p;
       }
@@ -48,14 +48,14 @@ public class ProductList {
   }
 
   void delete(int productNo) {
-    Product pruduct = get(productNo);
-    if (pruduct == null) {
+    Product product = get(productNo);
+    if (product == null) {
       return;
     }
 
     Node cursor = first;
     while (cursor != null) {
-      if (cursor.pruduct == pruduct) {
+      if (cursor.product == product) {
         this.size--;
         if (first == last) {
           first = last = null;
@@ -82,7 +82,7 @@ public class ProductList {
   public boolean exist(String name) {
     Node cursor = first;
     while (cursor != null) {
-      Product p = cursor.pruduct;
+      Product p = cursor.product;
       if (p.name.equals(name)) {
         return true;
       }
@@ -92,12 +92,12 @@ public class ProductList {
   }
 
   static class Node {
-    Product pruduct;
+    Product product;
     Node next;
     Node prev;
 
     Node(Product p) {
-      this.pruduct = p;
+      this.product = p;
     }
   }
 }
