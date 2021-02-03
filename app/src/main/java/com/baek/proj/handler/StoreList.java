@@ -4,11 +4,11 @@ import com.baek.proj.domain.Store;
 
 public class StoreList {
 
-  Node first;
-  Node last;
-  int size = 0;
+  private Node first;
+  private Node last;
+  private int size = 0;
 
-  void add(Store s) {
+  public void add(Store s) {
     Node node = new Node(s);
 
     if (last == null) {
@@ -22,7 +22,7 @@ public class StoreList {
     size++;
   }
 
-  Store[] toArray() {
+  public Store[] toArray() {
     Store[] arr = new Store[size];
 
     Node cursor = this.first;
@@ -35,11 +35,11 @@ public class StoreList {
     return arr;
   }
 
-  Store get(int storeNo) {
+  public Store get(int storeNo) {
     Node cursor = first;
     while (cursor != null) {
       Store s = cursor.store;
-      if (s.no == storeNo) {
+      if (s.getNo() == storeNo) {
         return s;
       }
       cursor = cursor.next;
@@ -47,16 +47,10 @@ public class StoreList {
     return null;
   }
 
-  void delete(int storeNo) {
-    Store store = get(storeNo);
-
-    if (store == null) {
-      return;
-    }
-
+  public void delete(int storeNo) {
     Node cursor = first;
     while (cursor != null) {
-      if (cursor.store == store) {
+      if (cursor.store.getNo() == storeNo) {
         this.size--;
         if (first == last) {
           first = last = null;

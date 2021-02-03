@@ -4,11 +4,11 @@ import com.baek.proj.domain.Employee;
 
 public class EmployeeList {
 
-  Node first;
-  Node last;
-  int size = 0;
+  private Node first;
+  private Node last;
+  private int size = 0;
 
-  void add(Employee e) {
+  public void add(Employee e) {
     Node node = new Node(e);
 
     if (last == null) {
@@ -22,7 +22,7 @@ public class EmployeeList {
     size++;
   }
 
-  Employee[] toArray() {
+  public Employee[] toArray() {
     Employee[] arr = new Employee[size];
 
     Node cursor = this.first;
@@ -35,11 +35,11 @@ public class EmployeeList {
     return arr;
   }
 
-  Employee get(int employeeNo) {
+  public Employee get(int employeeNo) {
     Node cursor = first;
     while (cursor != null) {
       Employee e = cursor.employee;
-      if (e.no == employeeNo) {
+      if (e.getNo() == employeeNo) {
         return e;
       }
       cursor = cursor.next;
@@ -47,15 +47,10 @@ public class EmployeeList {
     return null;
   }
 
-  void delete(int employeeNo) {
-    Employee employee = get(employeeNo);
-    if (employee == null) {
-      return;
-    }
-
+  public void delete(int employeeNo) {
     Node cursor = first;
     while (cursor != null) {
-      if (cursor.employee == employee) {
+      if (cursor.employee.getNo() == employeeNo) {
         this.size--;
         if (first == last) {
           first = last = null;
@@ -83,7 +78,7 @@ public class EmployeeList {
     Node cursor = first;
     while (cursor != null) {
       Employee e = cursor.employee;
-      if (e.name.equals(name)) {
+      if (e.getName().equals(name)) {
         return true;
       }
       cursor = cursor.next;

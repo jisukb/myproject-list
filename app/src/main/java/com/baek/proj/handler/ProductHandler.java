@@ -5,7 +5,11 @@ import com.baek.util.Prompt;
 
 public class ProductHandler {
 
-  public ProductList productList = new ProductList();
+  private ProductList productList = new ProductList();
+
+  public ProductList getProductList() {
+    return this.productList;
+  }
 
   public void service() {
     loop: 
@@ -52,12 +56,12 @@ public class ProductHandler {
     System.out.println("[상품 등록]");
 
     Product p = new Product();
-    p.no = Prompt.inputInt("번호> ");
-    p.category = Prompt.inputInt("카테고리\n0: 서적 1: 굿즈 2: 음반\n> ");
-    p.name = Prompt.inputString("상품명> ");
-    p.price = Prompt.inputInt("가격> ");
-    p.stock = Prompt.inputInt("재고상태\n0: 예약\n1: 판매중\n2: 품절\n> ");
-    p.info = Prompt.inputString("설명> ");
+    p.setNo(Prompt.inputInt("번호> "));
+    p.setCategory(Prompt.inputInt("카테고리\n0: 서적\n1: 굿즈\n2: 음반\n> "));
+    p.setName(Prompt.inputString("상품명> "));
+    p.setPrice(Prompt.inputInt("가격> "));
+    p.setStock(Prompt.inputInt("재고상태\n0: 예약\n1: 판매중\n2: 품절\n> "));
+    p.setInfo(Prompt.inputString("설명> "));
 
     productList.add(p);
     System.out.println("상품을 등록하였습니다.");
@@ -65,10 +69,12 @@ public class ProductHandler {
 
   public void list() {
     System.out.println("[상품 목록]");
+
     Product[] products = productList.toArray();
     for (Product p : products) {
-      System.out.printf("%d. %s> %s %d원, %s\n",
-          p.no, getChoiceCate(p.category), p.name, p.price, getState(p.stock));
+      System.out.printf("%d. %s> %s\t%d원, %s\n",
+          p.getNo(), getChoiceCate(p.getCategory()), p.getName(), 
+          p.getPrice(), getState(p.getStock()));
     }
   }
 
@@ -81,11 +87,11 @@ public class ProductHandler {
       System.out.println("해당 번호의 상품이 없습니다.");
       return;
     }
-    System.out.printf("카테고리: %s\n", getChoiceCate(product.category));
-    System.out.printf("상품명: %s\n", product.name);
-    System.out.printf("가격: %s\n", product.price);
-    System.out.printf("재고상태: %s\n", getState(product.stock));
-    System.out.printf("설명: %s\n", product.info);
+    System.out.printf("카테고리: %s\n", getChoiceCate(product.getCategory()));
+    System.out.printf("상품명: %s\n", product.getName());
+    System.out.printf("가격: %s\n", product.getPrice());
+    System.out.printf("재고상태: %s\n", getState(product.getStock()));
+    System.out.printf("설명: %s\n", product.getInfo());
   }
 
   public void update() {
@@ -98,20 +104,20 @@ public class ProductHandler {
       return;
     }
     int category = Prompt.inputInt(String.format(
-        "카테고리\n0: 서적 1: 굿즈 2: 음반\n> ", getChoiceCate(product.category)));
-    String name = Prompt.inputString(String.format("상품명(%s)> ", product.name));
-    int price = Prompt.inputInt(String.format("가격(%s)> ", product.price));
+        "카테고리\n0: 서적\n1: 굿즈\n2: 음반\n> ", getChoiceCate(product.getCategory())));
+    String name = Prompt.inputString(String.format("상품명(%s)> ", product.getName()));
+    int price = Prompt.inputInt(String.format("가격(%s)> ", product.getPrice()));
     int stock = Prompt.inputInt(String.format(
-        "재고상태\n0: 예약상품\n1: 판매중\n2: 품절\n> ", getState(product.stock)));
-    String info = Prompt.inputString(String.format("설명(%s)> ", product.info));
+        "재고상태\n0: 예약상품\n1: 판매중\n2: 품절\n> ", getState(product.getStock())));
+    String info = Prompt.inputString(String.format("설명(%s)> ", product.getInfo()));
 
     String input = Prompt.inputString("변경하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      product.category = category;
-      product.name = name;
-      product.price = price;
-      product.stock = stock;
-      product.info = info;
+      product.setCategory(category);
+      product.setName(name);
+      product.setPrice(price);
+      product.setStock(stock);
+      product.setInfo(info);
       System.out.println("상품 정보를 변경하였습니다.");
     } else {
       System.out.println("수정을 취소하였습니다.");
@@ -155,6 +161,19 @@ public class ProductHandler {
         return "품절입니다.";
       default:
         return "예약상품입니다.";
+    }
+  }
+
+  String inputProduct(String promptTitle) {
+    while (true) {
+      String name = Prompt.inputString(promptTitle);
+      if (name.length() == 0) {
+        return null;
+      } else if (this.productList.exist(name)) {
+        return name;
+      } else {
+        System.out.println("등록된 상품이 아닙니다.");
+      }
     }
   }
 }

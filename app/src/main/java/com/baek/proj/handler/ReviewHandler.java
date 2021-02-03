@@ -6,12 +6,12 @@ import com.baek.util.Prompt;
 
 public class ReviewHandler {
 
-  ReviewList reviewList = new ReviewList();
+  private ReviewList reviewList = new ReviewList();
 
-  ProductList productList;
+  private ProductHandler productHandler;
 
-  public ReviewHandler(ProductList productList) {
-    this.productList = productList;
+  public ReviewHandler(ProductHandler productHandler) {
+    this.productHandler = productHandler;
   }
 
   public void service() {
@@ -60,16 +60,16 @@ public class ReviewHandler {
 
     Review r = new Review();
 
-    r.no = Prompt.inputInt("번호> ");
-    r.title = Prompt.inputString("제목> ");
-    r.writer = Prompt.inputString("작성자> ");
-    r.content = Prompt.inputString("내용> ");
-    r.product = inputProduct("상품명> ");
-    if (r.product == null) {
+    r.setNo(Prompt.inputInt("번호> "));
+    r.setTitle(Prompt.inputString("제목> "));
+    r.setWriter(Prompt.inputString("작성자> "));
+    r.setContent(Prompt.inputString("내용> "));
+    r.setProduct(productHandler.inputProduct("상품명> "));
+    if (r.getProduct() == null) {
       System.out.println("리뷰 등록을 취소하였습니다.");
       return;
     }
-    r.registereDate = new Date(System.currentTimeMillis());
+    r.setRegistereDate(new Date(System.currentTimeMillis()));
 
     reviewList.add(r);
     System.out.println("리뷰를 등록하였습니다.");
@@ -78,10 +78,11 @@ public class ReviewHandler {
 
   public void list() {
     System.out.println("[리뷰 목록]");
+
     Review[] reviews = reviewList.toArray();
     for (Review r : reviews) {
       System.out.printf("%d. %s, %s, %s, %d\n",
-          r.no, r.title, r.registereDate, r.writer, r.viewCount);
+          r.getNo(), r.getTitle(), r.getRegistereDate(), r.getWriter(), r.getViewCount());
     }
   }
 
@@ -94,13 +95,13 @@ public class ReviewHandler {
       System.out.println("해당 번호의 글이 없습니다.");
       return;
     }
-    review.viewCount++;
-    System.out.printf("제목: %s\n", review.title);
-    System.out.printf("작성자: %s\n", review.writer);
-    System.out.printf("상품명: %s\n", review.product);
-    System.out.printf("내용: %s\n", review.content);
-    System.out.printf("등록일: %s\n", review.registereDate);
-    System.out.printf("조회수: %s\n", review.viewCount);
+    review.setViewCount(review.getViewCount() + 1);
+    System.out.printf("제목: %s\n", review.getTitle());
+    System.out.printf("작성자: %s\n", review.getWriter());
+    System.out.printf("상품명: %s\n", review.getProduct());
+    System.out.printf("내용: %s\n", review.getContent());
+    System.out.printf("등록일: %s\n", review.getRegistereDate());
+    System.out.printf("조회수: %s\n", review.getViewCount());
   }
 
   public void update() {
@@ -112,13 +113,13 @@ public class ReviewHandler {
       System.out.println("해당 번호의 글이 없습니다.");
       return;
     }
-    String title = Prompt.inputString(String.format("제목(%s)> ", review.title));
-    String content = Prompt.inputString(String.format("내용(%s)> ", review.content));
+    String title = Prompt.inputString(String.format("제목(%s)> ", review.getTitle()));
+    String content = Prompt.inputString(String.format("내용(%s)> ", review.getContent()));
 
     String input = Prompt.inputString("변경하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      review.title = title;
-      review.content = content;
+      review.setTitle(title);
+      review.setContent(content);
       System.out.println("리뷰를 변경하였습니다.");
     } else {
       System.out.println("수정을 취소하였습니다.");
@@ -140,19 +141,6 @@ public class ReviewHandler {
       System.out.println("리뷰를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
-    }
-  }
-
-  String inputProduct(String promptTitle) {
-    while (true) {
-      String name = Prompt.inputString(promptTitle);
-      if (name.length() == 0) {
-        return null;
-      } else if (this.productList.exist(name)) {
-        return name;
-      } else {
-        System.out.println("등록된 상품이 아닙니다.");
-      }
     }
   }
 }

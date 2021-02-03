@@ -4,11 +4,11 @@ import com.baek.proj.domain.Review;
 
 public class ReviewList {
 
-  Node first;
-  Node last;
-  int size = 0;
+  private Node first;
+  private Node last;
+  private int size = 0;
 
-  void add(Review r) {
+  public void add(Review r) {
     Node node = new Node(r);
 
     if (last == null) {
@@ -22,7 +22,7 @@ public class ReviewList {
     size++;
   }
 
-  Review[] toArray() {
+  public Review[] toArray() {
     Review[] arr = new Review[size];
 
     Node cursor = this.first;
@@ -35,11 +35,11 @@ public class ReviewList {
     return arr;
   }
 
-  Review get(int reviewNo) {
+  public Review get(int reviewNo) {
     Node cursor = first;
     while (cursor != null) {
       Review r = cursor.review;
-      if (r.no == reviewNo) {
+      if (r.getNo() == reviewNo) {
         return r;
       }
       cursor = cursor.next;
@@ -47,16 +47,10 @@ public class ReviewList {
     return null;
   }
 
-  void delete(int reviewNo) {
-    Review review = get(reviewNo);
-
-    if (review == null) {
-      return;
-    }
-
+  public void delete(int reviewNo) {
     Node cursor = first;
     while (cursor != null) {
-      if (cursor.review == review) {
+      if (cursor.review.getNo() == reviewNo) {
         this.size--;
         if (first == last) {
           first = last = null;

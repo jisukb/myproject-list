@@ -11,8 +11,8 @@ public class App {
 
     EmployeeHandler employeeHandler = new EmployeeHandler();
     ProductHandler productHandler = new ProductHandler();
-    StoreHandler storeHandler = new StoreHandler(employeeHandler.employeeList);
-    ReviewHandler reviewHandler = new ReviewHandler(productHandler.productList);
+    StoreHandler storeHandler = new StoreHandler(employeeHandler);
+    ReviewHandler reviewHandler = new ReviewHandler(productHandler);
 
     loop: 
       while (true) {

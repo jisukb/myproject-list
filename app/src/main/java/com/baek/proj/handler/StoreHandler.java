@@ -5,12 +5,12 @@ import com.baek.util.Prompt;
 
 public class StoreHandler {
 
-  StoreList storeList = new StoreList();
+  private StoreList storeList = new StoreList();
 
-  EmployeeList employeeList;
+  private EmployeeHandler employeeHandler;
 
-  public StoreHandler(EmployeeList employeeList) {
-    this.employeeList = employeeList;
+  public StoreHandler(EmployeeHandler employeeHandler) {
+    this.employeeHandler = employeeHandler;
   }
 
   public void service() {
@@ -58,26 +58,28 @@ public class StoreHandler {
     System.out.println("[지점 등록]");
 
     Store s = new Store();
-    s.no = Prompt.inputInt("번호> ");
-    s.name = Prompt.inputString("지점명> ");
-    s.address = Prompt.inputString("주소> ");
-    s.tel = Prompt.inputString("전화번호> ");
-    s.time = Prompt.inputString("영업시간> ");
-    s.manager = inputEmployee("매니저> ");
-    if (s.manager == null) {
+    s.setNo(Prompt.inputInt("번호> "));
+    s.setName(Prompt.inputString("지점명> "));
+    s.setAddress(Prompt.inputString("주소> "));
+    s.setTel(Prompt.inputString("전화번호> "));
+    s.setTime(Prompt.inputString("영업시간> "));
+    s.setManager(employeeHandler.inputEmployee("매니저> "));
+    if (s.getManager() == null) {
       System.out.println("지점 등록을 취소하였습니다.");
       return;
     }
+
     storeList.add(s);
     System.out.println("지점을 등록하였습니다.");
   }
 
   public void list() {
     System.out.println("[지점 목록]");
+
     Store[] stores = storeList.toArray();
     for (Store s : stores) {
       System.out.printf("%d> %s점 %s TEL.%s\n", 
-          s.no, s.name, s.address,telFormat(s.tel));
+          s.getNo(), s.getName(), s.getAddress(), telFormat(s.getTel()));
     } 
   }
 
@@ -90,12 +92,12 @@ public class StoreHandler {
       System.out.println("해당 번호의 지점이 없습니다.");
       return;
     }
-    System.out.printf("지점명: %s\n", store.name);
-    System.out.printf("주소: %s\n", store.address);
+    System.out.printf("지점명: %s\n", store.getName());
+    System.out.printf("주소: %s\n", store.getAddress());
     System.out.printf("전화번호: %s\n", 
-        telFormat(store.tel));
-    System.out.printf("영업시간: %s\n", store.time);
-    System.out.printf("매니저: %s\n", store.manager);
+        telFormat(store.getTel()));
+    System.out.printf("영업시간: %s\n", store.getTime());
+    System.out.printf("매니저: %s\n", store.getManager());
   }
 
   public void update() {
@@ -107,11 +109,11 @@ public class StoreHandler {
       System.out.println("해당 번호의 지점이 없습니다.");
       return;
     }
-    String name = Prompt.inputString(String.format("지점명(%s)> ", store.name));
-    String address = Prompt.inputString(String.format("주소(%s)> ", store.address));
-    String tel = Prompt.inputString(String.format("전화번호(%s)> ", store.tel));
-    String time = Prompt.inputString(String.format("영업시간(%s)> ", store.time));
-    String manager = Prompt.inputString(String.format("매니저(%s)> ", store.manager));
+    String name = Prompt.inputString(String.format("지점명(%s)> ", store.getName()));
+    String address = Prompt.inputString(String.format("주소(%s)> ", store.getAddress()));
+    String tel = Prompt.inputString(String.format("전화번호(%s)> ", store.getTel()));
+    String time = Prompt.inputString(String.format("영업시간(%s)> ", store.getTime()));
+    String manager = Prompt.inputString(String.format("매니저(%s)> ", store.getManager()));
     if (manager == null) {
       System.out.println("지점 수정을 취소하였습니다.");
       return;
@@ -119,11 +121,11 @@ public class StoreHandler {
 
     String input = Prompt.inputString("변경하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      store.name = name;
-      store.address = address;
-      store.tel = tel;
-      store.time = time;
-      store.manager = manager;
+      store.setName(name);
+      store.setAddress(address);
+      store.setTel(tel);
+      store.setTime(time);
+      store.setManager(manager);
       System.out.println("지점 정보를 변경하였습니다.");
     } else {
       System.out.println("수정을 취소하였습니다.");
@@ -155,19 +157,6 @@ public class StoreHandler {
       return tel.replaceFirst("(^[0-9]{3})([0-9]{4})([0-9]{4})$", "$1-$2-$3");
     } else {
       return tel.replaceFirst("(^02)([0-9]{3})([0-9]{4})$", "$1-$2-$3"); 
-    }
-  }
-
-  String inputEmployee(String promptTitle) {
-    while (true) {
-      String name = Prompt.inputString(promptTitle);
-      if (name.length() == 0) {
-        return null;
-      } else if (this.employeeList.exist(name)) {
-        return name;
-      } else {
-        System.out.println("등록된 사원이 아닙니다.");
-      }
     }
   }
 }

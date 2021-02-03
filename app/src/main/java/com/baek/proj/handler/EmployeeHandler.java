@@ -5,7 +5,11 @@ import com.baek.util.Prompt;
 
 public class EmployeeHandler {
 
-  public EmployeeList employeeList = new EmployeeList();
+  private EmployeeList employeeList = new EmployeeList();
+
+  public EmployeeList getEmployeeList() {
+    return this.employeeList;
+  }
 
   public void service() {
     loop: 
@@ -53,12 +57,12 @@ public class EmployeeHandler {
 
     Employee e = new Employee();
 
-    e.no = Prompt.inputInt("번호> ");
-    e.name = Prompt.inputString("이름> ");
-    e.dept = Prompt.inputString("부서> ");
-    e.email = Prompt.inputString("메일> ");
-    e.phone = Prompt.inputString("전화번호> ");
-    e.joinDate = Prompt.inputDate("입사일> ");
+    e.setNo(Prompt.inputInt("번호> "));
+    e.setName(Prompt.inputString("이름> "));
+    e.setDept(Prompt.inputString("부서> "));
+    e.setEmail(Prompt.inputString("메일> "));
+    e.setPhone(Prompt.inputString("전화번호> "));
+    e.setJoinDate(Prompt.inputDate("입사일> "));
 
     employeeList.add(e);
     System.out.println("사원을 등록하였습니다.");
@@ -66,10 +70,12 @@ public class EmployeeHandler {
 
   public void list() {
     System.out.println("[사원 목록]");
+
     Employee[] employees = employeeList.toArray();
     for (Employee e : employees) {
       System.out.printf("%d> %s (%s부) %s, %s, %s 입사\n", 
-          e.no, e.name, e.dept, e.email, phoneFormat(e.phone), e.joinDate);
+          e.getNo(), e.getName(), e.getDept(), e.getEmail(), 
+          phoneFormat(e.getPhone()), e.getJoinDate());
     }
   }
 
@@ -82,12 +88,12 @@ public class EmployeeHandler {
       System.out.println("해당 번호의 사원이 없습니다.");
       return;
     }
-    System.out.printf("이름: %s\n", employee.name);
-    System.out.printf("부서: %s\n", employee.dept);
-    System.out.printf("메일: %s\n", employee.email);
+    System.out.printf("이름: %s\n", employee.getName());
+    System.out.printf("부서: %s\n", employee.getDept());
+    System.out.printf("메일: %s\n", employee.getEmail());
     System.out.printf("전화번호: %s\n", 
-        employee.phone.replaceFirst("(\\d{3})(\\d{4})(\\d+)", "$1-$2-$3"));
-    System.out.printf("입사일: %s\n", employee.joinDate);
+        employee.getPhone().replaceFirst("(\\d{3})(\\d{4})(\\d+)", "$1-$2-$3"));
+    System.out.printf("입사일: %s\n", employee.getJoinDate());
   }
 
   public void update() {
@@ -99,17 +105,17 @@ public class EmployeeHandler {
       System.out.println("해당 번호의 사원이 없습니다.");
       return;
     }
-    String name = Prompt.inputString(String.format("이름(%s)> ", employee.name));
-    String dept = Prompt.inputString(String.format("부서(%s)> ", employee.dept));
-    String email = Prompt.inputString(String.format("메일(%s)> ", employee.email));
-    String phone = Prompt.inputString(String.format("전화번호(%s)> ", employee.phone));
+    String name = Prompt.inputString(String.format("이름(%s)> ", employee.getName()));
+    String dept = Prompt.inputString(String.format("부서(%s)> ", employee.getDept()));
+    String email = Prompt.inputString(String.format("메일(%s)> ", employee.getEmail()));
+    String phone = Prompt.inputString(String.format("전화번호(%s)> ", employee.getPhone()));
 
     String input = Prompt.inputString("변경하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      employee.name = name;
-      employee.dept = dept;
-      employee.email = email;
-      employee.phone = phone;
+      employee.setName(name);
+      employee.setDept(dept);
+      employee.setEmail(email);
+      employee.setPhone(phone);
       System.out.println("사원 정보를 변경하였습니다.");
     } else {
       System.out.println("수정을 취소하였습니다.");
@@ -139,5 +145,18 @@ public class EmployeeHandler {
       return phone.replaceFirst("(^010)([0-9]{4})([0-9]{4})$", "$1-$2-$3");
     }
     return phone; 
+  }
+
+  String inputEmployee(String promptTitle) {
+    while (true) {
+      String name = Prompt.inputString(promptTitle);
+      if (name.length() == 0) {
+        return null;
+      } else if (this.employeeList.exist(name)) {
+        return name;
+      } else {
+        System.out.println("등록된 사원이 아닙니다.");
+      }
+    }
   }
 }
