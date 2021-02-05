@@ -1,11 +1,12 @@
 package com.baek.proj.handler;
 
 import com.baek.proj.domain.Store;
+import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class StoreHandler {
 
-  private StoreList storeList = new StoreList();
+  private List storeList = new List();
 
   private EmployeeHandler employeeHandler;
 
@@ -76,8 +77,10 @@ public class StoreHandler {
   public void list() {
     System.out.println("[지점 목록]");
 
-    Store[] stores = storeList.toArray();
-    for (Store s : stores) {
+    Object[] list = storeList.toArray();
+    for (Object obj : list) {
+      Store s = (Store) obj;
+      // 번호, 지점명, 주소, 전화번호
       System.out.printf("%d> %s점 %s TEL.%s\n", 
           s.getNo(), s.getName(), s.getAddress(), telFormat(s.getTel()));
     } 
@@ -87,15 +90,14 @@ public class StoreHandler {
     System.out.println("[지점 상세]");
 
     int no = Prompt.inputInt("번호> ");
-    Store store = storeList.get(no);
+    Store store = findByNo(no);
     if (store == null) {
       System.out.println("해당 번호의 지점이 없습니다.");
       return;
     }
     System.out.printf("지점명: %s\n", store.getName());
     System.out.printf("주소: %s\n", store.getAddress());
-    System.out.printf("전화번호: %s\n", 
-        telFormat(store.getTel()));
+    System.out.printf("전화번호: %s\n", telFormat(store.getTel()));
     System.out.printf("영업시간: %s\n", store.getTime());
     System.out.printf("매니저: %s\n", store.getManager());
   }
@@ -104,7 +106,7 @@ public class StoreHandler {
     System.out.println("[지점 수정]");
 
     int no = Prompt.inputInt("번호> ");
-    Store store = storeList.get(no);
+    Store store = findByNo(no);
     if (store == null) {
       System.out.println("해당 번호의 지점이 없습니다.");
       return;
@@ -136,14 +138,14 @@ public class StoreHandler {
     System.out.println("[지점 삭제]");
 
     int no = Prompt.inputInt("번호> ");
-    Store store = storeList.get(no);
+    Store store = findByNo(no);
     if (store == null) {
       System.out.println("해당 번호의 지점이 없습니다.");
       return;
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      storeList.delete(no);
+      storeList.delete(store);
       System.out.println("지점 정보를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
@@ -158,5 +160,16 @@ public class StoreHandler {
     } else {
       return tel.replaceFirst("(^02)([0-9]{3})([0-9]{4})$", "$1-$2-$3"); 
     }
+  }
+
+  private Store findByNo(int storeNo) {
+    Object[] list = storeList.toArray();
+    for (Object obj : list) {
+      Store s = (Store) obj;
+      if (s.getNo() == storeNo) {
+        return s;
+      }
+    }
+    return null;
   }
 }

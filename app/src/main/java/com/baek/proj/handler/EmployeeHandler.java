@@ -1,13 +1,14 @@
 package com.baek.proj.handler;
 
 import com.baek.proj.domain.Employee;
+import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class EmployeeHandler {
 
-  private EmployeeList employeeList = new EmployeeList();
+  private List employeeList = new List();
 
-  public EmployeeList getEmployeeList() {
+  public List getEmployeeList() {
     return this.employeeList;
   }
 
@@ -71,8 +72,10 @@ public class EmployeeHandler {
   public void list() {
     System.out.println("[사원 목록]");
 
-    Employee[] employees = employeeList.toArray();
-    for (Employee e : employees) {
+    Object[] list = employeeList.toArray();
+    for (Object obj : list) {
+      Employee e = (Employee) obj;
+      // 번호, 이름, 부서, 이메일, 전화번호, 입사일
       System.out.printf("%d> %s (%s부) %s, %s, %s 입사\n", 
           e.getNo(), e.getName(), e.getDept(), e.getEmail(), 
           phoneFormat(e.getPhone()), e.getJoinDate());
@@ -83,7 +86,7 @@ public class EmployeeHandler {
     System.out.println("[사원 상세]");
 
     int no = Prompt.inputInt("번호> ");
-    Employee employee = employeeList.get(no);
+    Employee employee = findByNo(no);
     if (employee == null) {
       System.out.println("해당 번호의 사원이 없습니다.");
       return;
@@ -100,7 +103,7 @@ public class EmployeeHandler {
     System.out.println("[사원 수정]");
 
     int no = Prompt.inputInt("번호> ");
-    Employee employee = employeeList.get(no);
+    Employee employee = findByNo(no);
     if (employee == null) {
       System.out.println("해당 번호의 사원이 없습니다.");
       return;
@@ -126,14 +129,14 @@ public class EmployeeHandler {
     System.out.println("[사원 삭제]");
 
     int no = Prompt.inputInt("번호> ");
-    Employee employee = employeeList.get(no);
+    Employee employee = findByNo(no);
     if (employee == null) {
       System.out.println("해당 번호의 사원이 없습니다.");
       return;
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      employeeList.delete(no);
+      employeeList.delete(employee);
       System.out.println("사원 정보를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
@@ -147,16 +150,38 @@ public class EmployeeHandler {
     return phone; 
   }
 
-  String inputEmployee(String promptTitle) {
+  public String inputEmployee(String promptTitle) {
     while (true) {
       String name = Prompt.inputString(promptTitle);
       if (name.length() == 0) {
         return null;
-      } else if (this.employeeList.exist(name)) {
+      } else if (findByName(name) != null) {
         return name;
       } else {
         System.out.println("등록된 사원이 아닙니다.");
       }
     }
+  }
+
+  private Employee findByNo(int employeeNo) {
+    Object[] list = employeeList.toArray();
+    for (Object obj : list) {
+      Employee e = (Employee) obj;
+      if (e.getNo() == employeeNo) {
+        return e;
+      }
+    }
+    return null;
+  }
+
+  private Employee findByName(String name) {
+    Object[] list = employeeList.toArray();
+    for (Object obj : list) {
+      Employee e = (Employee) obj;
+      if (e.getName().equals(name)) {
+        return e;
+      }
+    }
+    return null;
   }
 }

@@ -2,11 +2,12 @@ package com.baek.proj.handler;
 
 import java.sql.Date;
 import com.baek.proj.domain.Review;
+import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class ReviewHandler {
 
-  private ReviewList reviewList = new ReviewList();
+  private List reviewList = new List();
 
   private ProductHandler productHandler;
 
@@ -79,8 +80,10 @@ public class ReviewHandler {
   public void list() {
     System.out.println("[리뷰 목록]");
 
-    Review[] reviews = reviewList.toArray();
-    for (Review r : reviews) {
+    Object[] list = reviewList.toArray();
+    for (Object obj : list) {
+      Review r = (Review) obj;
+      // 번호, 제목, 등록일, 작성자, 조회수
       System.out.printf("%d. %s, %s, %s, %d\n",
           r.getNo(), r.getTitle(), r.getRegistereDate(), r.getWriter(), r.getViewCount());
     }
@@ -90,7 +93,7 @@ public class ReviewHandler {
     System.out.println("[리뷰 상세]");
 
     int no = Prompt.inputInt("번호> ");
-    Review review = reviewList.get(no);
+    Review review = findByNo(no);
     if (review == null) {
       System.out.println("해당 번호의 글이 없습니다.");
       return;
@@ -108,7 +111,7 @@ public class ReviewHandler {
     System.out.println("[리뷰 수정]");
 
     int no = Prompt.inputInt("번호> ");
-    Review review = reviewList.get(no);
+    Review review = findByNo(no);
     if (review == null) {
       System.out.println("해당 번호의 글이 없습니다.");
       return;
@@ -130,17 +133,28 @@ public class ReviewHandler {
     System.out.println("[리뷰 삭제]");
 
     int no = Prompt.inputInt("번호> ");
-    Review review = reviewList.get(no);
+    Review review = findByNo(no);
     if (review == null) {
       System.out.println("해당 번호의 글이 없습니다.");
       return;
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      reviewList.delete(no);
+      reviewList.delete(review);
       System.out.println("리뷰를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
     }
+  }
+
+  private Review findByNo(int reviewNo) {
+    Object[] list = reviewList.toArray();
+    for (Object obj : list) {
+      Review r = (Review) obj;
+      if (r.getNo() == reviewNo) {
+        return r;
+      }
+    }
+    return null;
   }
 }

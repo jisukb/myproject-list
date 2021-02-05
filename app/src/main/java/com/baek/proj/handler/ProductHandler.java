@@ -1,13 +1,14 @@
 package com.baek.proj.handler;
 
 import com.baek.proj.domain.Product;
+import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class ProductHandler {
 
-  private ProductList productList = new ProductList();
+  private List productList = new List();
 
-  public ProductList getProductList() {
+  public List getProductList() {
     return this.productList;
   }
 
@@ -70,8 +71,10 @@ public class ProductHandler {
   public void list() {
     System.out.println("[상품 목록]");
 
-    Product[] products = productList.toArray();
-    for (Product p : products) {
+    Object[] list = productList.toArray();
+    for (Object obj : list) {
+      Product p = (Product) obj;
+      // 번호, 카테고리, 상품명, 가격, 재고상태
       System.out.printf("%d. %s> %s\t%d원, %s\n",
           p.getNo(), getChoiceCate(p.getCategory()), p.getName(), 
           p.getPrice(), getState(p.getStock()));
@@ -82,7 +85,7 @@ public class ProductHandler {
     System.out.println("[상품 상세]");
 
     int no = Prompt.inputInt("번호> ");
-    Product product = productList.get(no);
+    Product product = findByNo(no);
     if (product == null) {
       System.out.println("해당 번호의 상품이 없습니다.");
       return;
@@ -98,7 +101,7 @@ public class ProductHandler {
     System.out.println("[상품 수정]");
 
     int no = Prompt.inputInt("번호> ");
-    Product product = productList.get(no);
+    Product product = findByNo(no);
     if (product == null) {
       System.out.println("해당 번호의 상품이 없습니다.");
       return;
@@ -128,14 +131,14 @@ public class ProductHandler {
     System.out.println("[상품 삭제]");
 
     int no = Prompt.inputInt("번호> ");
-    Product product = productList.get(no);
+    Product product = findByNo(no);
     if (product == null) {
       System.out.println("해당 번호의 상품이 없습니다.");
       return;
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      productList.delete(no);
+      productList.delete(product);
       System.out.println("상품 정보를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
@@ -169,11 +172,33 @@ public class ProductHandler {
       String name = Prompt.inputString(promptTitle);
       if (name.length() == 0) {
         return null;
-      } else if (this.productList.exist(name)) {
+      } else if (findByName(name) != null) {
         return name;
       } else {
         System.out.println("등록된 상품이 아닙니다.");
       }
     }
+  }
+
+  private Product findByNo(int productNo) {
+    Object[] list = productList.toArray();
+    for (Object obj : list) {
+      Product p = (Product) obj;
+      if (p.getNo() == productNo) {
+        return p;
+      }
+    }
+    return null;
+  }
+
+  private Product findByName(String name) {
+    Object[] list = productList.toArray();
+    for (Object obj : list) {
+      Product p = (Product) obj;
+      if (p.getName().equals(name)) {
+        return p;
+      }
+    }
+    return null;
   }
 }
