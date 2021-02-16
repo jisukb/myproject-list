@@ -4,10 +4,17 @@ import com.baek.proj.handler.EmployeeHandler;
 import com.baek.proj.handler.ProductHandler;
 import com.baek.proj.handler.ReviewHandler;
 import com.baek.proj.handler.StoreHandler;
+import com.baek.util.Iterator;
 import com.baek.util.Prompt;
+import com.baek.util.Queue;
+import com.baek.util.Stack;
 
 public class App {
-  public static void main(String[] args) {
+
+  static Stack<String> commandStack = new Stack<>();
+  static Queue<String> commandQueue = new Queue<>();
+
+  public static void main(String[] args) throws CloneNotSupportedException {
 
     EmployeeHandler employeeHandler = new EmployeeHandler();
     ProductHandler productHandler = new ProductHandler();
@@ -26,7 +33,14 @@ public class App {
         System.out.println("--------------");
 
         String command = com.baek.util.Prompt.inputString("메인> ");
+        if (command.length() == 0)
+          continue;
+
+        commandStack.push(command);
+        commandQueue.offer(command);
+
         System.out.println();
+
         switch (command) {
           case "1":
             employeeHandler.service();
@@ -40,6 +54,12 @@ public class App {
           case "4":
             reviewHandler.service();
             break;
+          case "history":
+            printCommandHistory(commandStack.iterator());
+            break;
+          case "history2":
+            printCommandHistory(commandQueue.iterator());
+            break;
           case "0":
             System.out.println("프로그램을 종료합니다.");
             break loop;
@@ -51,5 +71,18 @@ public class App {
       }
 
     Prompt.close();
+  }
+
+  static void printCommandHistory(Iterator<String> iterator) {
+    int count = 0;
+    while (iterator.hasNext()) {
+      System.out.println(iterator.next());
+      if ((++count % 5) == 0) {
+        String input = Prompt.inputString(": ");
+        if (input.equalsIgnoreCase("q")) {
+          break;
+        }
+      }
+    }
   }
 }

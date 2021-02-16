@@ -1,18 +1,19 @@
 package com.baek.proj.handler;
 
 import com.baek.proj.domain.Product;
+import com.baek.util.Iterator;
 import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class ProductHandler {
 
-  private List productList = new List();
+  private List<Product> productList = new List<>();
 
-  public List getProductList() {
+  public List<Product> getProductList() {
     return this.productList;
   }
 
-  public void service() {
+  public void service() throws CloneNotSupportedException {
     loop: 
       while (true) {
 
@@ -68,14 +69,14 @@ public class ProductHandler {
     System.out.println("상품을 등록하였습니다.");
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[상품 목록]");
 
-    Object[] list = productList.toArray();
-    for (Object obj : list) {
-      Product p = (Product) obj;
+    Iterator<Product> iterator = productList.iterator();
+    while (iterator.hasNext()) {
+      Product p = iterator.next();
       // 번호, 카테고리, 상품명, 가격, 재고상태
-      System.out.printf("%d. %s> %s\t%d원, %s\n",
+      System.out.printf("%d. %s> %s, %,d원 %s\n",
           p.getNo(), getChoiceCate(p.getCategory()), p.getName(), 
           p.getPrice(), getState(p.getStock()));
     }
@@ -92,7 +93,7 @@ public class ProductHandler {
     }
     System.out.printf("카테고리: %s\n", getChoiceCate(product.getCategory()));
     System.out.printf("상품명: %s\n", product.getName());
-    System.out.printf("가격: %s\n", product.getPrice());
+    System.out.printf("가격: %,d\n", product.getPrice());
     System.out.printf("재고상태: %s\n", getState(product.getStock()));
     System.out.printf("설명: %s\n", product.getInfo());
   }
@@ -109,7 +110,7 @@ public class ProductHandler {
     int category = Prompt.inputInt(String.format(
         "카테고리\n0: 서적\n1: 굿즈\n2: 음반\n> ", getChoiceCate(product.getCategory())));
     String name = Prompt.inputString(String.format("상품명(%s)> ", product.getName()));
-    int price = Prompt.inputInt(String.format("가격(%s)> ", product.getPrice()));
+    int price = Prompt.inputInt(String.format("가격(%,d)> ", product.getPrice()));
     int stock = Prompt.inputInt(String.format(
         "재고상태\n0: 예약상품\n1: 판매중\n2: 품절\n> ", getState(product.getStock())));
     String info = Prompt.inputString(String.format("설명(%s)> ", product.getInfo()));
@@ -181,9 +182,8 @@ public class ProductHandler {
   }
 
   private Product findByNo(int productNo) {
-    Object[] list = productList.toArray();
-    for (Object obj : list) {
-      Product p = (Product) obj;
+    Product[] list = productList.toArray(new Product[productList.size()]);
+    for (Product p : list) {
       if (p.getNo() == productNo) {
         return p;
       }
@@ -192,9 +192,8 @@ public class ProductHandler {
   }
 
   private Product findByName(String name) {
-    Object[] list = productList.toArray();
-    for (Object obj : list) {
-      Product p = (Product) obj;
+    Product[] list = productList.toArray(new Product[productList.size()]);
+    for (Product p : list) {
       if (p.getName().equals(name)) {
         return p;
       }

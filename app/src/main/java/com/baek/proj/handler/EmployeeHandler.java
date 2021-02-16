@@ -1,18 +1,19 @@
 package com.baek.proj.handler;
 
 import com.baek.proj.domain.Employee;
+import com.baek.util.Iterator;
 import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class EmployeeHandler {
 
-  private List employeeList = new List();
+  private List<Employee> employeeList = new List<>();
 
-  public List getEmployeeList() {
+  public List<Employee> getEmployeeList() {
     return this.employeeList;
   }
 
-  public void service() {
+  public void service() throws CloneNotSupportedException {
     loop: 
       while (true) {
 
@@ -69,12 +70,12 @@ public class EmployeeHandler {
     System.out.println("사원을 등록하였습니다.");
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[사원 목록]");
 
-    Object[] list = employeeList.toArray();
-    for (Object obj : list) {
-      Employee e = (Employee) obj;
+    Iterator<Employee> iterator = employeeList.iterator();
+    while (iterator.hasNext()) {
+      Employee e = iterator.next();
       // 번호, 이름, 부서, 이메일, 전화번호, 입사일
       System.out.printf("%d> %s (%s부) %s, %s, %s 입사\n", 
           e.getNo(), e.getName(), e.getDept(), e.getEmail(), 
@@ -164,9 +165,8 @@ public class EmployeeHandler {
   }
 
   private Employee findByNo(int employeeNo) {
-    Object[] list = employeeList.toArray();
-    for (Object obj : list) {
-      Employee e = (Employee) obj;
+    Employee[] list = employeeList.toArray(new Employee[employeeList.size()]);
+    for (Employee e : list) {
       if (e.getNo() == employeeNo) {
         return e;
       }
@@ -175,9 +175,8 @@ public class EmployeeHandler {
   }
 
   private Employee findByName(String name) {
-    Object[] list = employeeList.toArray();
-    for (Object obj : list) {
-      Employee e = (Employee) obj;
+    Employee[] list = employeeList.toArray(new Employee[employeeList.size()]);
+    for (Employee e : list) {
       if (e.getName().equals(name)) {
         return e;
       }

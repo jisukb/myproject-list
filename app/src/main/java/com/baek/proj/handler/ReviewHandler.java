@@ -2,12 +2,13 @@ package com.baek.proj.handler;
 
 import java.sql.Date;
 import com.baek.proj.domain.Review;
+import com.baek.util.Iterator;
 import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class ReviewHandler {
 
-  private List reviewList = new List();
+  private List<Review> reviewList = new List<>();
 
   private ProductHandler productHandler;
 
@@ -15,7 +16,7 @@ public class ReviewHandler {
     this.productHandler = productHandler;
   }
 
-  public void service() {
+  public void service() throws CloneNotSupportedException {
     loop: 
       while (true) {
 
@@ -77,12 +78,12 @@ public class ReviewHandler {
 
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[리뷰 목록]");
 
-    Object[] list = reviewList.toArray();
-    for (Object obj : list) {
-      Review r = (Review) obj;
+    Iterator<Review> iterator = reviewList.iterator();
+    while (iterator.hasNext()) {
+      Review r = iterator.next();
       // 번호, 제목, 등록일, 작성자, 조회수
       System.out.printf("%d. %s, %s, %s, %d\n",
           r.getNo(), r.getTitle(), r.getRegistereDate(), r.getWriter(), r.getViewCount());
@@ -148,9 +149,8 @@ public class ReviewHandler {
   }
 
   private Review findByNo(int reviewNo) {
-    Object[] list = reviewList.toArray();
-    for (Object obj : list) {
-      Review r = (Review) obj;
+    Review[] list = reviewList.toArray(new Review[reviewList.size()]);
+    for (Review r : list) {
       if (r.getNo() == reviewNo) {
         return r;
       }

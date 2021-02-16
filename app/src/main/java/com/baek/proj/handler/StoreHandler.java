@@ -1,12 +1,13 @@
 package com.baek.proj.handler;
 
 import com.baek.proj.domain.Store;
+import com.baek.util.Iterator;
 import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class StoreHandler {
 
-  private List storeList = new List();
+  private List<Store> storeList = new List<>();
 
   private EmployeeHandler employeeHandler;
 
@@ -14,7 +15,7 @@ public class StoreHandler {
     this.employeeHandler = employeeHandler;
   }
 
-  public void service() {
+  public void service() throws CloneNotSupportedException {
     loop: 
       while (true) {
 
@@ -74,12 +75,12 @@ public class StoreHandler {
     System.out.println("지점을 등록하였습니다.");
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[지점 목록]");
 
-    Object[] list = storeList.toArray();
-    for (Object obj : list) {
-      Store s = (Store) obj;
+    Iterator<Store> iterator = storeList.iterator();
+    while (iterator.hasNext()) {
+      Store s = iterator.next();
       // 번호, 지점명, 주소, 전화번호
       System.out.printf("%d> %s점 %s TEL.%s\n", 
           s.getNo(), s.getName(), s.getAddress(), telFormat(s.getTel()));
@@ -163,9 +164,8 @@ public class StoreHandler {
   }
 
   private Store findByNo(int storeNo) {
-    Object[] list = storeList.toArray();
-    for (Object obj : list) {
-      Store s = (Store) obj;
+    Store[] list = storeList.toArray(new Store[storeList.size()]);
+    for (Store s : list) {
       if (s.getNo() == storeNo) {
         return s;
       }
