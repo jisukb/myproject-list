@@ -1,17 +1,13 @@
 package com.baek.proj.handler;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import com.baek.proj.domain.Product;
-import com.baek.util.Iterator;
-import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class ProductHandler {
 
-  private List<Product> productList = new List<>();
-
-  public List<Product> getProductList() {
-    return this.productList;
-  }
+  private LinkedList<Product> productList = new LinkedList<>();
 
   public void service() throws CloneNotSupportedException {
     loop: 
@@ -76,7 +72,7 @@ public class ProductHandler {
     while (iterator.hasNext()) {
       Product p = iterator.next();
       // 번호, 카테고리, 상품명, 가격, 재고상태
-      System.out.printf("%d. %s> %s, %,d원 %s\n",
+      System.out.printf("%d. %s> %s %,d원 %s\n",
           p.getNo(), getChoiceCate(p.getCategory()), p.getName(), 
           p.getPrice(), getState(p.getStock()));
     }
@@ -139,7 +135,7 @@ public class ProductHandler {
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      productList.delete(product);
+      productList.remove(product);
       System.out.println("상품 정보를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");

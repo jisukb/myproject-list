@@ -1,13 +1,13 @@
 package com.baek.proj.handler;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import com.baek.proj.domain.Store;
-import com.baek.util.Iterator;
-import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class StoreHandler {
 
-  private List<Store> storeList = new List<>();
+  private LinkedList<Store> storeList = new LinkedList<>();
 
   private EmployeeHandler employeeHandler;
 
@@ -146,7 +146,7 @@ public class StoreHandler {
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      storeList.delete(store);
+      storeList.remove(store);
       System.out.println("지점 정보를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");

@@ -1,14 +1,14 @@
 package com.baek.proj.handler;
 
 import java.sql.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import com.baek.proj.domain.Review;
-import com.baek.util.Iterator;
-import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class ReviewHandler {
 
-  private List<Review> reviewList = new List<>();
+  private LinkedList<Review> reviewList = new LinkedList<>();
 
   private ProductHandler productHandler;
 
@@ -141,7 +141,7 @@ public class ReviewHandler {
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      reviewList.delete(review);
+      reviewList.remove(review);
       System.out.println("리뷰를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");

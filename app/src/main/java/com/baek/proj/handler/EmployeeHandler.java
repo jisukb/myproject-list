@@ -1,17 +1,13 @@
 package com.baek.proj.handler;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import com.baek.proj.domain.Employee;
-import com.baek.util.Iterator;
-import com.baek.util.List;
 import com.baek.util.Prompt;
 
 public class EmployeeHandler {
 
-  private List<Employee> employeeList = new List<>();
-
-  public List<Employee> getEmployeeList() {
-    return this.employeeList;
-  }
+  private LinkedList<Employee> employeeList = new LinkedList<>();
 
   public void service() throws CloneNotSupportedException {
     loop: 
@@ -137,7 +133,7 @@ public class EmployeeHandler {
     }
     String input = Prompt.inputString("삭제하시겠습니까?(Y/N) ");
     if (input.equalsIgnoreCase("Y")) {
-      employeeList.delete(employee);
+      employeeList.remove(employee);
       System.out.println("사원 정보를 삭제하였습니다.");
     } else {
       System.out.println("삭제를 취소하였습니다.");
