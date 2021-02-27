@@ -1,12 +1,24 @@
 package com.baek.proj;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import com.baek.proj.domain.Employee;
 import com.baek.proj.domain.Product;
 import com.baek.proj.domain.Review;
 import com.baek.proj.domain.Store;
+import com.baek.proj.handler.Command;
 import com.baek.proj.handler.EmployeeAddHandler;
 import com.baek.proj.handler.EmployeeDeleteHandler;
 import com.baek.proj.handler.EmployeeDetailHandler;
@@ -36,81 +48,120 @@ import com.baek.util.Prompt;
 
 public class App {
 
+  // 입력한 명령 저장
   static ArrayDeque<String> commandStack = new ArrayDeque<>();
   static LinkedList<String> commandQueue = new LinkedList<>();
 
-  static LinkedList<Employee> employeeList = new LinkedList<>();
-  static EmployeeAddHandler employeeAddHandler = new EmployeeAddHandler(employeeList);
-  static EmployeeListHandler employeeListHandler = new EmployeeListHandler(employeeList);
-  static EmployeeDetailHandler employeeDetailHandler = new EmployeeDetailHandler(employeeList);
-  static EmployeeUpdateHandler employeeUpdateHandler = new EmployeeUpdateHandler(employeeList);
-  static EmployeeDeleteHandler employeeDeleteHandler = new EmployeeDeleteHandler(employeeList);
-  static EmployeeValidatorHandler employeeValidatorHandler = new EmployeeValidatorHandler(employeeList);
+  // Value Object 저장 컬렉션 객체
+  static List<Employee> employeeList;
+  static List<Store> storeList;
+  static List<Product> productList;
+  static List<Review> reviewList;
 
-  static LinkedList<Store> storeList = new LinkedList<>();
-  static StoreAddHandler storeAddHandler = new StoreAddHandler(storeList, employeeValidatorHandler);
-  static StoreListHandler storeListHandler = new StoreListHandler(storeList);
-  static StoreDetailHandler storeDetailHandler = new StoreDetailHandler(storeList);
-  static StoreUpdateHandler storeUpdateHandler = new StoreUpdateHandler(storeList, employeeValidatorHandler);
-  static StoreDeleteHandler storeDeleteHandler = new StoreDeleteHandler(storeList);
-
-  static LinkedList<Product> productList = new LinkedList<>();
-  static ProductAddHandler productAddHandler = new ProductAddHandler(productList);
-  static ProductListHandler productListHandler = new ProductListHandler(productList);
-  static ProductDetailHandler productDetailHandler = new ProductDetailHandler(productList);
-  static ProductUpdateHandler productUpdateHandler = new ProductUpdateHandler(productList);
-  static ProductDeleteHandler productDeleteHandler = new ProductDeleteHandler(productList);
-  static ProductValidatorHandler productValidatorHandler = new ProductValidatorHandler(productList);
-  static ProductSearchHandler productSearchHandler = new ProductSearchHandler(productList);
-
-  static LinkedList<Review> reviewList = new LinkedList<>();
-  static ReviewAddHandler reviewAddHandler = new ReviewAddHandler(reviewList, productValidatorHandler);
-  static ReviewListHandler reviewListHandler = new ReviewListHandler(reviewList);
-  static ReviewDetailHandler reviewDetailHandler = new ReviewDetailHandler(reviewList);
-  static ReviewUpdateHandler reviewUpdateHandler = new ReviewUpdateHandler(reviewList, productValidatorHandler);
-  static ReviewDeleteHandler reviewDeleteHandler = new ReviewDeleteHandler(reviewList);
-  static ReviewSearchHandler reviewSearchHandler = new ReviewSearchHandler(reviewList);
+  // 데이터 파일 정보
+  static File employeeFile = new File("employee.data");
+  static File storeFile = new File("store.data");
+  static File productFile = new File("product.data");
+  static File reviewFile = new File("review.data");
 
   public static void main(String[] args) {
 
-    HelloHandler helloHandler = new HelloHandler();
+    // 파일에서 데이터 로딩
+    employeeList = loadObjects(employeeFile, Employee.class);
+    storeList = loadObjects(storeFile, Store.class);
+    productList = loadObjects(productFile, Product.class);
+    reviewList = loadObjects(reviewFile, Review.class);
+
+    // 명령 처리 객체 맵에 보관
+    HashMap<String,Command> commandMap = new HashMap<>();
+
+    commandMap.put("employeeadd", new EmployeeAddHandler(employeeList));
+    commandMap.put("employeelist", new EmployeeListHandler(employeeList));
+    commandMap.put("employeedetail", new EmployeeDetailHandler(employeeList));
+    commandMap.put("employeeupdate", new EmployeeUpdateHandler(employeeList));
+    commandMap.put("employeedelete", new EmployeeDeleteHandler(employeeList));
+    EmployeeValidatorHandler employeeValidatorHandler = new EmployeeValidatorHandler(employeeList);
+
+    commandMap.put("storeadd", new StoreAddHandler(storeList, employeeValidatorHandler));
+    commandMap.put("storelist", new StoreListHandler(storeList));
+    commandMap.put("storedetail", new StoreDetailHandler(storeList));
+    commandMap.put("storeupdate", new StoreUpdateHandler(storeList, employeeValidatorHandler));
+    commandMap.put("storedelete", new StoreDeleteHandler(storeList));
+
+    commandMap.put("productadd", new ProductAddHandler(productList));
+    commandMap.put("productlist", new ProductListHandler(productList));
+    commandMap.put("productdetail", new ProductDetailHandler(productList));
+    commandMap.put("productupdate", new ProductUpdateHandler(productList));
+    commandMap.put("productdelete", new ProductDeleteHandler(productList));
+    commandMap.put("productsearch", new ProductSearchHandler(productList));
+    ProductValidatorHandler productValidatorHandler = new ProductValidatorHandler(productList);
+
+    commandMap.put("reviewadd", new ReviewAddHandler(reviewList, productValidatorHandler));
+    commandMap.put("reviewlist", new ReviewListHandler(reviewList));
+    commandMap.put("reviewdetail", new ReviewDetailHandler(reviewList));
+    commandMap.put("reviewupdate", new ReviewUpdateHandler(reviewList, productValidatorHandler));
+    commandMap.put("reviewdelete", new ReviewDeleteHandler(reviewList));
+    commandMap.put("reviewsearch", new ReviewSearchHandler(reviewList));
+
+    commandMap.put("hello", new HelloHandler());
+
+    System.out.println("===============메인===============");
+    System.out.println("1. 사원 2. 지점 3. 상품 4. 리뷰");
+    System.out.println("종료 quit/exit");
+    System.out.println("==================================");
 
     loop: 
       while (true) {
 
-        System.out.println("=====메인=====");
-        System.out.println("1. 사원");
-        System.out.println("2. 지점");
-        System.out.println("3. 상품");
-        System.out.println("4. 리뷰");
-        System.out.println("0. 종료");
-        System.out.println("==============");
-
         String command = com.baek.util.Prompt.inputString("메인> ");
         System.out.println();
 
-        if (command.length() == 0)
+        if (command.length() == 0) // 빈 문자열 입력 시 재입력
           continue;
 
+        // 명령 보관
         commandStack.push(command);
         commandQueue.offer(command);
 
         try {
           switch (command) {
             case "1":
-              serviceEmployee();
+              System.out.println("----------사원----------");
+              System.out.println("등록 employeeadd");
+              System.out.println("목록 employeelist");
+              System.out.println("상세 employeedetail");
+              System.out.println("수정 employeeupdate");
+              System.out.println("삭제 employeedelete");
+              System.out.println("------------------------");
               break;
             case "2":
-              serviceStore();
+              System.out.println("----------지점----------");
+              System.out.println("등록 storeadd");
+              System.out.println("목록 storelist");
+              System.out.println("상세 storedetail");
+              System.out.println("수정 storeupdate");
+              System.out.println("삭제 storedelete");
+              System.out.println("------------------------");
               break;
             case "3":
-              serviceProduct();
+              System.out.println("----------상품----------");
+              System.out.println("등록 productadd");
+              System.out.println("목록 productlist");
+              System.out.println("상세 productdetail");
+              System.out.println("수정 productupdate");
+              System.out.println("삭제 productdelete");
+              System.out.println("검색 productsearch");
+              System.out.println("------------------------");
               break;
             case "4":
-              serviceReview();
-              break;
-            case "hello":
-              helloHandler.service();
+              System.out.println("----------리뷰----------");
+              System.out.println("등록 reviewadd");
+              System.out.println("목록 reviewlist");
+              System.out.println("상세 reviewdetail");
+              System.out.println("수정 reviewupdate");
+              System.out.println("삭제 reviewdelete");
+              System.out.println("검색 reviewsearch");
+              System.out.println("------------------------");
               break;
             case "history":
               printCommandHistory(commandStack.iterator());
@@ -120,213 +171,32 @@ public class App {
               break;
             case "exit":
             case "quit":
-            case "0":
               System.out.println("프로그램을 종료합니다.");
               break loop;
             default:
-              System.out.println("해당 번호가 없습니다.");
+              Command commandHandler = commandMap.get(command);
+
+              if (commandHandler == null) {
+                System.out.println("실행할 수 없는 명령입니다.");
+              } else {
+                commandHandler.service();
+              }
           }
         } catch (Exception e) {
-          System.out.println();
+          System.out.println("----------------------------------------------------");
           System.out.printf("오류 발생: %s - %s\n", e.getClass().getName(), e.getMessage());
-          System.out.println();
+          System.out.println("----------------------------------------------------");
         }
         System.out.println();
       }
+
+    // 데이터 파일로 출력
+    saveObjects(employeeFile, employeeList);
+    saveObjects(storeFile, storeList);
+    saveObjects(productFile, productList);
+    saveObjects(reviewFile, reviewList);
 
     Prompt.close();
-  }
-
-  private static void serviceEmployee() {
-
-    loop: 
-      while (true) {
-
-        System.out.println("-----사원-----");
-        System.out.println("1. 등록");
-        System.out.println("2. 목록");
-        System.out.println("3. 상세");
-        System.out.println("4. 수정");
-        System.out.println("5. 삭제");
-        System.out.println("0. 메인");
-        System.out.println("--------------");
-
-        String command = com.baek.util.Prompt.inputString("사원> ");
-        System.out.println();
-
-        if (command.length() == 0)
-          continue;
-
-        switch (command) {
-          case "1":
-            employeeAddHandler.service();
-            break;
-          case "2":
-            employeeListHandler.service();
-            break;
-          case "3":
-            employeeDetailHandler.service();
-            break;
-          case "4":
-            employeeUpdateHandler.service();
-            break;
-          case "5":
-            employeeDeleteHandler.service();
-            break;
-          case "0":
-            break loop;
-          default:
-            System.out.println("해당 번호가 없습니다.");
-        }
-
-        System.out.println();
-      }
-  }
-
-  private static void serviceStore() {
-
-    loop: 
-      while (true) {
-
-        System.out.println("-----지점-----");
-        System.out.println("1. 등록");
-        System.out.println("2. 목록");
-        System.out.println("3. 상세");
-        System.out.println("4. 수정");
-        System.out.println("5. 삭제");
-        System.out.println("0. 메인");
-        System.out.println("--------------");
-
-        String command = com.baek.util.Prompt.inputString("지점> ");
-        System.out.println();
-
-        if (command.length() == 0)
-          continue;
-
-        switch (command) {
-          case "1":
-            storeAddHandler.service();
-            break;
-          case "2":
-            storeListHandler.service();
-            break;
-          case "3":
-            storeDetailHandler.service();
-            break;
-          case "4":
-            storeUpdateHandler.service();
-            break;
-          case "5":
-            storeDeleteHandler.service();
-            break;
-          case "0":
-            break loop;
-          default:
-            System.out.println("해당 번호가 없습니다.");
-        }
-
-        System.out.println();
-      }
-  }
-
-  private static void serviceProduct() {
-
-    loop: 
-      while (true) {
-
-        System.out.println("-----상품-----");
-        System.out.println("1. 등록");
-        System.out.println("2. 목록");
-        System.out.println("3. 상세");
-        System.out.println("4. 수정");
-        System.out.println("5. 삭제");
-        System.out.println("0. 메인");
-        System.out.println("search");
-        System.out.println("--------------");
-
-        String command = com.baek.util.Prompt.inputString("상품> ");
-        System.out.println();
-
-        if (command.length() == 0)
-          continue;
-
-        switch (command) {
-          case "1":
-            productAddHandler.service();
-            break;
-          case "2":
-            productListHandler.service();
-            break;
-          case "3":
-            productDetailHandler.service();
-            break;
-          case "4":
-            productUpdateHandler.service();
-            break;
-          case "5":
-            productDeleteHandler.service();
-            break;
-          case "search":
-            productSearchHandler.service();
-            break;
-          case "0":
-            break loop;
-          default:
-            System.out.println("해당 번호가 없습니다.");
-        }
-
-        System.out.println();
-      }
-  }
-
-  private static void serviceReview() {
-
-    loop: 
-      while (true) {
-
-        System.out.println("-----리뷰-----");
-        System.out.println("1. 등록");
-        System.out.println("2. 목록");
-        System.out.println("3. 상세");
-        System.out.println("4. 수정");
-        System.out.println("5. 삭제");
-        System.out.println("0. 메인");
-        System.out.println("search");
-        System.out.println("--------------");
-
-        String command = com.baek.util.Prompt.inputString("리뷰> ");
-        System.out.println();
-
-        if (command.length() == 0)
-          continue;
-
-        switch (command) {
-          case "1":
-            reviewAddHandler.service();
-            break;
-          case "2":
-            reviewListHandler.service();
-            break;
-          case "3":
-            reviewDetailHandler.service();
-            break;
-          case "4":
-            reviewUpdateHandler.service();
-            break;
-          case "5":
-            reviewDeleteHandler.service();
-            break;
-          case "search":
-            reviewSearchHandler.service();
-            break;
-          case "0":
-            break loop;
-          default:
-            System.out.println("해당 번호가 없습니다.");
-        }
-
-        System.out.println();
-      }
   }
 
   static void printCommandHistory(Iterator<String> iterator) {
@@ -339,6 +209,30 @@ public class App {
           break;
         }
       }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  static <T extends Serializable> List<T> loadObjects(File file, Class<T> dataType) {
+    try (ObjectInputStream in = new ObjectInputStream(
+        new BufferedInputStream(
+            new FileInputStream(file)))) {
+      System.out.printf("파일 %s 로딩\n", file.getName());
+      return (List<T>) in.readObject();
+    } catch (Exception e) {
+      System.out.printf("파일 %s 로딩 중 오류 발생\n", file.getName());
+      return new ArrayList<T>();
+    }
+  }
+
+  static <T extends Serializable> void saveObjects(File file, List<T> dataList) {
+    try (ObjectOutputStream out = new ObjectOutputStream(
+        new BufferedOutputStream(
+            new FileOutputStream(file)))) {
+      out.writeObject(dataList);
+      System.out.printf("파일 %s 저장\n", file.getName());
+    } catch (Exception e) {
+      System.out.printf("파일 %s 저장 중 오류 발생\n", file.getName());
     }
   }
 }

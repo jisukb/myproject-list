@@ -1,6 +1,10 @@
 package com.baek.proj.domain;
 
-public class Store {
+import java.io.Serializable;
+
+public class Store implements Serializable {
+  private static final long serialVersionUID = 1L;
+
   private int no;
   private String name;
   private String address;
