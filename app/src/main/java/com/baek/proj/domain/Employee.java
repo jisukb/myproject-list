@@ -1,17 +1,51 @@
 package com.baek.proj.domain;
 
-import java.io.Serializable;
 import java.sql.Date;
+import com.baek.util.CsvObject;
 
-public class Employee implements Serializable {
-  private static final long serialVersionUID = 1L;
-
+public class Employee implements CsvObject {
   private int no;
   private String name;
   private String dept;
   private String email;
   private String phone;
   private Date joinDate;
+
+  public Employee() {}
+
+  public Employee(String csv) {
+    String[] fields = csv.split(","); // 번호,이름,부서,이메일,전화,입사일
+    this.setNo(Integer.parseInt(fields[0]));
+    this.setName(fields[1]);
+    this.setDept(fields[2]);
+    this.setEmail(fields[3]);
+    this.setPhone(fields[4]);
+    this.setJoinDate(Date.valueOf(fields[5]));
+  }
+
+  @Override
+  public String toCsvString() {
+    return String.format("%d,%s,%s,%s,%s,%s",
+        this.getNo(),
+        this.getName(),
+        this.getDept(),
+        this.getEmail(),
+        this.getPhone(),
+        this.getJoinDate());
+  }
+
+  // factory method pattern
+  public static Employee valueOfCsv(String csv) {
+    String[] fields = csv.split(","); // 번호,이름,부서,이메일,전화,입사일
+    Employee e = new Employee();
+    e.setNo(Integer.parseInt(fields[0]));
+    e.setName(fields[1]);
+    e.setDept(fields[2]);
+    e.setEmail(fields[3]);
+    e.setPhone(fields[4]);
+    e.setJoinDate(Date.valueOf(fields[5]));
+    return e;
+  }
 
   @Override
   public int hashCode() {

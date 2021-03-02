@@ -1,16 +1,49 @@
 package com.baek.proj.domain;
 
-import java.io.Serializable;
+import com.baek.util.CsvObject;
 
-public class Store implements Serializable {
-  private static final long serialVersionUID = 1L;
-
+public class Store implements CsvObject {
   private int no;
   private String name;
   private String address;
   private String tel;
   private String time;
   private String manager;
+
+  public Store() {}
+
+  public Store(String csv) {
+    String[] fields = csv.split(","); // 번호,지점명,주소,전화,시간,매니저
+    this.setNo(Integer.parseInt(fields[0]));
+    this.setName(fields[1]);
+    this.setAddress(fields[2]);
+    this.setTel(fields[3]);
+    this.setTime(fields[4]);
+    this.setManager(fields[5]);
+  }
+
+  @Override
+  public String toCsvString() {
+    return String.format("%d,%s,%s,%s,%s,%s",
+        this.getNo(),
+        this.getName(),
+        this.getAddress(),
+        this.getTel(),
+        this.getTime(),
+        this.getManager());
+  }
+
+  public static Store valueOfCsv(String csv) {
+    String[] fields = csv.split(","); // 번호,지점명,주소,전화,시간,매니저
+    Store s = new Store();
+    s.setNo(Integer.parseInt(fields[0]));
+    s.setName(fields[1]);
+    s.setAddress(fields[2]);
+    s.setTel(fields[3]);
+    s.setTime(fields[4]);
+    s.setManager(fields[5]);
+    return s;
+  }
 
   @Override
   public int hashCode() {

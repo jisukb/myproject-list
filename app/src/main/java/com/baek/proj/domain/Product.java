@@ -1,16 +1,49 @@
 package com.baek.proj.domain;
 
-import java.io.Serializable;
+import com.baek.util.CsvObject;
 
-public class Product implements Serializable {
-  private static final long serialVersionUID = 1L;
-
+public class Product implements CsvObject {
   private int no;
   private int category;
   private String name;
   private int price;
   private int stock;
   private String info;
+
+  public Product() {}
+
+  public Product(String csv) {
+    String[] fields = csv.split(","); // 번호,카테고리,상품명,가격,상태,설명
+    this.setNo(Integer.parseInt(fields[0]));
+    this.setCategory(Integer.parseInt(fields[1]));
+    this.setName(fields[2]);
+    this.setPrice(Integer.parseInt(fields[3]));
+    this.setStock(Integer.parseInt(fields[4]));
+    this.setInfo(fields[5]);
+  }
+
+  @Override
+  public String toCsvString() {
+    return String.format("%d,%d,%s,%d,%d,%s",
+        this.getNo(),
+        this.getCategory(),
+        this.getName(),
+        this.getPrice(),
+        this.getStock(),
+        this.getInfo());
+  }
+
+  public static Product valueOfCsv(String csv) {
+    String[] fields = csv.split(","); // 번호,카테고리,상품명,가격,상태,설명
+    Product p = new Product();
+    p.setNo(Integer.parseInt(fields[0]));
+    p.setCategory(Integer.parseInt(fields[1]));
+    p.setName(fields[2]);
+    p.setPrice(Integer.parseInt(fields[3]));
+    p.setStock(Integer.parseInt(fields[4]));
+    p.setInfo(fields[5]);
+    return p;
+  }
 
   @Override
   public int hashCode() {

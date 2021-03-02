@@ -1,11 +1,9 @@
 package com.baek.proj.domain;
 
-import java.io.Serializable;
 import java.sql.Date;
+import com.baek.util.CsvObject;
 
-public class Review implements Serializable {
-  private static final long serialVersionUID = 1L;
-
+public class Review implements CsvObject {
   private int no;
   private String title;
   private String content;
@@ -13,6 +11,44 @@ public class Review implements Serializable {
   private String product;
   private Date registereDate;
   private int viewCount;
+
+  public Review() {}
+
+  public Review(String csv) {
+    String[] fields = csv.split(","); // 번호,제목,내용,작성자,상품명,등록일,조회수
+    this.setNo(Integer.parseInt(fields[0]));
+    this.setTitle(fields[1]);
+    this.setContent(fields[2]);
+    this.setWriter(fields[3]);
+    this.setProduct(fields[4]);
+    this.setRegistereDate(Date.valueOf(fields[5]));
+    this.setViewCount(Integer.parseInt(fields[6]));
+  }
+
+  @Override
+  public String toCsvString() {
+    return String.format("%d,%s,%s,%s,%s,%s,%d",
+        this.getNo(),
+        this.getTitle(),
+        this.getContent(),
+        this.getWriter(),
+        this.getProduct(),
+        this.getRegistereDate().toString(),
+        this.getViewCount());
+  }
+
+  public static Review valueOfCsv(String csv) {
+    String[] fields = csv.split(","); // 번호,제목,내용,작성자,상품명,등록일,조회수
+    Review r = new Review();
+    r.setNo(Integer.parseInt(fields[0]));
+    r.setTitle(fields[1]);
+    r.setContent(fields[2]);
+    r.setWriter(fields[3]);
+    r.setProduct(fields[4]);
+    r.setRegistereDate(Date.valueOf(fields[5]));
+    r.setViewCount(Integer.parseInt(fields[6]));
+    return r;
+  }
 
   @Override
   public int hashCode() {

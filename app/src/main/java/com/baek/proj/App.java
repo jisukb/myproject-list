@@ -1,13 +1,10 @@
 package com.baek.proj;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +41,8 @@ import com.baek.proj.handler.StoreDeleteHandler;
 import com.baek.proj.handler.StoreDetailHandler;
 import com.baek.proj.handler.StoreListHandler;
 import com.baek.proj.handler.StoreUpdateHandler;
+import com.baek.util.CsvObject;
+import com.baek.util.ObjectFactory;
 import com.baek.util.Prompt;
 
 public class App {
@@ -53,24 +52,24 @@ public class App {
   static LinkedList<String> commandQueue = new LinkedList<>();
 
   // Value Object 저장 컬렉션 객체
-  static List<Employee> employeeList;
-  static List<Store> storeList;
-  static List<Product> productList;
-  static List<Review> reviewList;
+  static ArrayList<Employee> employeeList = new ArrayList<>();
+  static ArrayList<Store> storeList = new ArrayList<>();
+  static ArrayList<Product> productList = new ArrayList<>();
+  static ArrayList<Review> reviewList = new ArrayList<>();
 
   // 데이터 파일 정보
-  static File employeeFile = new File("employee.data");
-  static File storeFile = new File("store.data");
-  static File productFile = new File("product.data");
-  static File reviewFile = new File("review.data");
+  static File employeeFile = new File("employee.csv");
+  static File storeFile = new File("store.csv");
+  static File productFile = new File("product.csv");
+  static File reviewFile = new File("review.csv");
 
   public static void main(String[] args) {
 
     // 파일에서 데이터 로딩
-    employeeList = loadObjects(employeeFile, Employee.class);
-    storeList = loadObjects(storeFile, Store.class);
-    productList = loadObjects(productFile, Product.class);
-    reviewList = loadObjects(reviewFile, Review.class);
+    loadObjects(employeeFile, employeeList, Employee::new);
+    loadObjects(storeFile, storeList, Store::new);
+    loadObjects(productFile, productList, Product::new);
+    loadObjects(reviewFile, reviewList, Review::new);
 
     // 명령 처리 객체 맵에 보관
     HashMap<String,Command> commandMap = new HashMap<>();
@@ -212,27 +211,27 @@ public class App {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  static <T extends Serializable> List<T> loadObjects(File file, Class<T> dataType) {
-    try (ObjectInputStream in = new ObjectInputStream(
-        new BufferedInputStream(
-            new FileInputStream(file)))) {
-      System.out.printf("파일 %s 로딩\n", file.getName());
-      return (List<T>) in.readObject();
+  static <T> void loadObjects(File file, List<T> list, ObjectFactory<T> objFactory) {
+    try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+      String csvStr = null;
+      while ((csvStr = in.readLine()) != null) {
+        list.add(objFactory.create(csvStr));
+      }
+      System.out.printf("파일 %s 데이터 로딩\n", file.getName());
     } catch (Exception e) {
-      System.out.printf("파일 %s 로딩 중 오류 발생\n", file.getName());
-      return new ArrayList<T>();
+      System.out.printf("파일 %s 데이터 로딩 중 오류 발생\n", file.getName());
     }
   }
 
-  static <T extends Serializable> void saveObjects(File file, List<T> dataList) {
-    try (ObjectOutputStream out = new ObjectOutputStream(
-        new BufferedOutputStream(
-            new FileOutputStream(file)))) {
-      out.writeObject(dataList);
-      System.out.printf("파일 %s 저장\n", file.getName());
+  static <T extends CsvObject> void saveObjects(File file, List<T> list) {
+    try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
+      for (CsvObject csvObj : list) {
+        out.write(csvObj.toCsvString() + "\n");
+      }
+      System.out.printf("파일 %s 데이터 저장\n", file.getName());
     } catch (Exception e) {
-      System.out.printf("파일 %s 저장 중 오류 발생\n", file.getName());
+      System.out.printf("파일 %s 데이터 저장 중 오류 발생\n", file.getName());
     }
   }
+
 }
