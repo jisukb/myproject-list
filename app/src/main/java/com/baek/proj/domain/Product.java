@@ -23,6 +23,12 @@ public class Product implements CsvObject {
   }
 
   @Override
+  public String toString() {
+    return "Product [no=" + no + ", category=" + category + ", name=" + name + ", price=" + price
+        + ", stock=" + stock + ", info=" + info + "]";
+  }
+
+  @Override
   public String toCsvString() {
     return String.format("%d,%d,%s,%d,%d,%s",
         this.getNo(),

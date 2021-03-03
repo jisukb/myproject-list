@@ -24,6 +24,12 @@ public class Employee implements CsvObject {
   }
 
   @Override
+  public String toString() {
+    return "Employee [no=" + no + ", name=" + name + ", dept=" + dept + ", email=" + email
+        + ", phone=" + phone + ", joinDate=" + joinDate + "]";
+  }
+
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%s,%s,%s",
         this.getNo(),

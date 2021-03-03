@@ -23,6 +23,12 @@ public class Store implements CsvObject {
   }
 
   @Override
+  public String toString() {
+    return "Store [no=" + no + ", name=" + name + ", address=" + address + ", tel=" + tel
+        + ", time=" + time + ", manager=" + manager + "]";
+  }
+
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%s,%s,%s",
         this.getNo(),

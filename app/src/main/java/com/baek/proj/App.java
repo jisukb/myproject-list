@@ -5,8 +5,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -42,8 +44,9 @@ import com.baek.proj.handler.StoreDetailHandler;
 import com.baek.proj.handler.StoreListHandler;
 import com.baek.proj.handler.StoreUpdateHandler;
 import com.baek.util.CsvObject;
-import com.baek.util.ObjectFactory;
 import com.baek.util.Prompt;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class App {
 
@@ -58,18 +61,18 @@ public class App {
   static ArrayList<Review> reviewList = new ArrayList<>();
 
   // 데이터 파일 정보
-  static File employeeFile = new File("employee.csv");
-  static File storeFile = new File("store.csv");
-  static File productFile = new File("product.csv");
-  static File reviewFile = new File("review.csv");
+  static File employeeFile = new File("employee.json");
+  static File storeFile = new File("store.json");
+  static File productFile = new File("product.json");
+  static File reviewFile = new File("review.json");
 
   public static void main(String[] args) {
 
     // 파일에서 데이터 로딩
-    loadObjects(employeeFile, employeeList, Employee::new);
-    loadObjects(storeFile, storeList, Store::new);
-    loadObjects(productFile, productList, Product::new);
-    loadObjects(reviewFile, reviewList, Review::new);
+    loadObjects(employeeFile, employeeList, Employee.class);
+    loadObjects(storeFile, storeList, Store.class);
+    loadObjects(productFile, productList, Product.class);
+    loadObjects(reviewFile, reviewList, Review.class);
 
     // 명령 처리 객체 맵에 보관
     HashMap<String,Command> commandMap = new HashMap<>();
@@ -118,7 +121,7 @@ public class App {
         if (command.length() == 0) // 빈 문자열 입력 시 재입력
           continue;
 
-        // 명령 보관
+        // 입력한 명령 보관
         commandStack.push(command);
         commandQueue.offer(command);
 
@@ -211,12 +214,24 @@ public class App {
     }
   }
 
-  static <T> void loadObjects(File file, List<T> list, ObjectFactory<T> objFactory) {
+  static <T> void loadObjects(File file, List<T> list, Class<T> elementType) {
     try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-      String csvStr = null;
-      while ((csvStr = in.readLine()) != null) {
-        list.add(objFactory.create(csvStr));
+      // 파일의 모든 데이터를 읽어서 보관
+      StringBuilder strBuilder = new StringBuilder();
+      String str = null;
+      while ((str = in.readLine()) != null) {
+        strBuilder.append(str);
       }
+      // 파일에서 읽은 JSON 문자열
+      // System.out.println(strBuilder.toString());
+
+      // 보관된 값을 꺼내 자바 객체로 만들기
+      Gson gson = new Gson();
+      // JSON 문자열 -> 컬렉션 객체
+      Type collectionType = TypeToken.getParameterized(Collection.class, elementType).getType();
+      Collection<T> collection = gson.fromJson(strBuilder.toString(), collectionType);
+      list.addAll(collection);
+
       System.out.printf("파일 %s 데이터 로딩\n", file.getName());
     } catch (Exception e) {
       System.out.printf("파일 %s 데이터 로딩 중 오류 발생\n", file.getName());
@@ -225,9 +240,7 @@ public class App {
 
   static <T extends CsvObject> void saveObjects(File file, List<T> list) {
     try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
-      for (CsvObject csvObj : list) {
-        out.write(csvObj.toCsvString() + "\n");
-      }
+      out.write(new Gson().toJson(list));
       System.out.printf("파일 %s 데이터 저장\n", file.getName());
     } catch (Exception e) {
       System.out.printf("파일 %s 데이터 저장 중 오류 발생\n", file.getName());

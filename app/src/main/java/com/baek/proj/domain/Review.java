@@ -26,6 +26,13 @@ public class Review implements CsvObject {
   }
 
   @Override
+  public String toString() {
+    return "Review [no=" + no + ", title=" + title + ", content=" + content + ", writer=" + writer
+        + ", product=" + product + ", registereDate=" + registereDate + ", viewCount=" + viewCount
+        + "]";
+  }
+
+  @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%s,%s,%s,%d",
         this.getNo(),
