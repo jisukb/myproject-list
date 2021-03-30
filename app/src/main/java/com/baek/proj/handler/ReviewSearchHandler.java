@@ -25,8 +25,8 @@ public class ReviewSearchHandler extends AbstractReviewHandler {
     Review[] reviews = reviewList.toArray(new Review[reviewList.size()]);
     for (Review r : reviews) {
       if (r.getTitle().contains(keyword) || 
-          r.getContent().contains(keyword) ||
           r.getWriter().contains(keyword) ||
+          r.getContent().contains(keyword) ||
           r.getProduct().contains(keyword)) {
         list.add(r);
       }

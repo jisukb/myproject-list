@@ -17,9 +17,9 @@ public class ReviewListHandler extends AbstractReviewHandler {
     Iterator<Review> iterator = reviewList.iterator();
     while (iterator.hasNext()) {
       Review r = iterator.next();
-      // 번호, 제목, 등록일, 작성자, 조회수
-      System.out.printf("%d. %s, %s, %s, %d\n",
-          r.getNo(), r.getTitle(), r.getRegistereDate(), r.getWriter(), r.getViewCount());
+      // 번호, 제목, 작성자, 상품, 등록일, 조회수
+      System.out.printf("%d. %s, %s, %s, %s, %d\n",
+          r.getNo(), r.getTitle(), r.getWriter(), r.getProduct(), r.getRegistereDate(), r.getViewCount());
     }
   }
 }

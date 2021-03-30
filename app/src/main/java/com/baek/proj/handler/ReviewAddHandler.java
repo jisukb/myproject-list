@@ -23,12 +23,12 @@ public class ReviewAddHandler extends AbstractReviewHandler {
     r.setNo(Prompt.inputInt("번호> "));
     r.setTitle(Prompt.inputString("제목> "));
     r.setWriter(Prompt.inputString("작성자> "));
-    r.setContent(Prompt.inputString("내용> "));
     r.setProduct(productValidatorHandler.inputProduct("상품명> "));
     if (r.getProduct() == null) {
       System.out.println("리뷰 등록을 취소하였습니다.");
       return;
     }
+    r.setContent(Prompt.inputString("내용> "));
     r.setRegistereDate(new Date(System.currentTimeMillis()));
 
     reviewList.add(r);
